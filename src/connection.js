@@ -1,4 +1,4 @@
-import { decode } from "./shortsocket.js"
+import { decode } from "./shortsocket.js";
 
 
 export class Connection {
@@ -26,10 +26,25 @@ export class Connection {
     }
 
     message(data) {
-        if (data[0] == "S") { // This is a status event
+        let connection = this;
+        if (data instanceof Blob) {
+            let result = "";
+            let reader = data.slice(1).stream().getReader();
+            reader.read().then(function processText({ done, value }) {
+                if (done) {
+                    let bytes = [];
+                    for (let byte of result.split(",")) {
+                        bytes.push(parseInt(byte));
+                    }
+                    connection.onpacket(decode(bytes));
+                    return;
+                }
+                
+                result += value;
+                return reader.read().then(processText);
+            });
+        } else {
             this.onstatus(JSON.parse(data.slice(1)));
-        } else if (data[0] == "P") { // This is a gameplay packet
-            this.onpacket(decode(data.slice(1))); // Fix dis
         }
     }
 }

@@ -1,10 +1,25 @@
 <script>
-    import { page } from "./state.js";
+    import { assets, page } from "./state.js";
     import { Connection } from "./connection.js";
     import { setContext, onMount } from 'svelte';
     import GameView from "./GameView.svelte";
     import WaitingView from "./WaitingView.svelte";
 
+    // Load the assets
+    let assetNames = ["puff.png"];
+    let loadedAssets = {};
+
+    for (let assetName of assetNames) {
+        let imageURL = new URL("assets/" + assetName, import.meta.url).href;
+        let assetImage = new Image();
+        assetImage.src = imageURL;
+        assetImage.onload = () => {
+            loadedAssets[assetName] = assetImage
+            assets.set(loadedAssets);
+        }
+    }
+
+    // Connect to the server
     let conn = new Connection();
 
     setContext('connection', conn);
@@ -20,7 +35,7 @@
     }
 
     onMount(() => {
-        // conn.connect("wss://backend.puffio.repl.co");
+        conn.connect("wss://backend.puffio.repl.co");
     });
 </script>
 

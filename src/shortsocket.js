@@ -75,7 +75,7 @@ function decode_bool8(data) {
 
 
 export function decode(data) {
-    let i = 0;
+    let i = 1;
     let dtype = _get_dtype(data[0]);
     let step = _get_step(dtype);
     let decoded = [];
