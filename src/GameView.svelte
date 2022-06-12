@@ -1,14 +1,16 @@
 <script>
-    import { assets, world } from "./state.js"
+    import { assets, world, render, update, keys, input } from "./game.js";
 	import { onMount } from 'svelte';
-    import { render } from "./render.js";
-    import { update } from "./game.js";
     import { getContext } from 'svelte';
 
     let conn = getContext('connection');
+    // let timer = new Timer();
     conn.onpacket = (packet) => {
         $world = update($world, packet);
-        // conn.send(""); // Add keydown sending
+        // timer.tick();
+        // console.log(timer.fps);
+        // conn.send(input($keys)); // Add keydown sending
+        conn.send(input($keys));
     };
     
     let canvas;
@@ -24,8 +26,12 @@
     $: if (canvas) canvas.height = height;
 
     function frame() {
-        animationFrame = requestAnimationFrame(frame);
-        render($assets, $world, ctx, width, height);
+        try {
+            render($assets, $world, ctx, width, height);
+            animationFrame = requestAnimationFrame(frame);
+        } catch(err) {
+            throw err;
+        }
     }
     
     onMount(() => {

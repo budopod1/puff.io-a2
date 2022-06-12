@@ -1,12 +1,11 @@
 <script>
-    import { assets, page } from "./state.js";
-    import { Connection } from "./connection.js";
+    import { assets, page, Connection, keys } from "./game.js";
     import { setContext, onMount } from 'svelte';
     import GameView from "./GameView.svelte";
     import WaitingView from "./WaitingView.svelte";
 
     // Load the assets
-    let assetNames = ["puff.png"];
+    let assetNames = ["puff.png", "grass.png"];
     let loadedAssets = {};
 
     for (let assetName of assetNames) {
@@ -35,9 +34,19 @@
     }
 
     onMount(() => {
-        conn.connect("wss://backend.puffio.repl.co");
+        conn.connect("wss://backend.puffio.repl.co/ws");
     });
+
+    // Add keydown listeners
+    window.onkeydown = (e) => {
+        $keys.add(e.keyCode);
+    }
+
+    window.onkeyup = (e) => {
+        $keys.delete(e.keyCode);
+    }
 </script>
+<!-- // data:text/html,<script>d=document;d.onkeydown=e=>d.body.innerText=e.keyCode</script> -->
 
 <main>
     {#if $page == "game"}

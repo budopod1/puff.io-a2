@@ -40,15 +40,23 @@ function decode_int8(data) {
 
 
 function decode_int32(data) {
+    /*
     let total = 0;
     for (let i = 0; i < 4; i++) {
         total += data[i] * 256**i;
     }
-    if (total < 2**31) {
-        return -total;
+    if (total%2 == 0) {
+        return total / 2;
     } else {
-        return total - 2**31;
+        return -(total-1)/2;
     }
+    */
+    let total = 0;
+    for (let i = 0; i < 4; i++) {
+        total += data[i] * 256**i;
+    }
+    total = total >> 1;
+    return (total >> 1) * (total % 2 == 0 ? -1 : 1);
 }
 
 
