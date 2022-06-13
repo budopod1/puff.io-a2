@@ -1,14 +1,15 @@
 <script>
-    import { assets, world, render, update, keys, input } from "./game.js";
+    import { assets, render, update, keys, input } from "./game.js";
 	import { onMount } from 'svelte';
     import { getContext } from 'svelte';
 
     let conn = getContext('connection');
+    let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
     // let timer = new Timer();
     conn.onpacket = (packet) => {
         if (packet) {
             // console.log(packet);
-            $world = update($world, packet);
+            world = update(world, packet);
         }
         // timer.tick();
         // console.log(timer.fps);
@@ -30,7 +31,7 @@
 
     function frame() {
         try {
-            render($assets, $world, ctx, width, height);
+            render($assets, world, ctx, width, height);
             animationFrame = requestAnimationFrame(frame);
         } catch(err) {
             throw err;

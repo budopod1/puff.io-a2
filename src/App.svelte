@@ -1,5 +1,5 @@
 <script>
-    import { assets, page, Connection, keys } from "./game.js";
+    import { assets, Connection, keys } from "./game.js";
     import { setContext, onMount } from 'svelte';
     import GameView from "./GameView.svelte";
     import WaitingView from "./WaitingView.svelte";
@@ -7,6 +7,7 @@
     // Load the assets
     let assetNames = ["puff.png", "grass.png"];
     let loadedAssets = {};
+    let page = "waiting";
 
     for (let assetName of assetNames) {
         let imageURL = new URL("assets/" + assetName, import.meta.url).href;
@@ -25,7 +26,7 @@
 
     conn.onstatus = (data) => {
         if (data.action == "connect") {
-            $page = "game";
+            page = "game";
         }
     };
 
@@ -49,13 +50,13 @@
 <!-- // data:text/html,<script>d=document;d.onkeydown=e=>d.body.innerText=e.keyCode</script> -->
 
 <main>
-    {#if $page == "game"}
+    {#if page == "game"}
         <GameView/>
-    {:else if $page == "waiting"}
+    {:else if page == "waiting"}
         <WaitingView/>
-    {:else if $page == "login"}
+    {:else if page == "login"}
         <LoginView/>
-    {:else if $page == "signup"}
+    {:else if page == "signup"}
         <SignupView/>
     {/if}
 </main>

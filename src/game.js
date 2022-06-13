@@ -2,18 +2,12 @@ import { decode } from "./shortsocket.js";
 import { writable } from 'svelte/store';
 
 
-let page_ = writable("waiting");
-
-let world_ = writable({"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0});
-
 let assets_ = writable({});
 
 let keys_ = writable(new Set());
 
 
 export {
-    page_ as page,
-    world_ as world,
     assets_ as assets,
     keys_ as keys
 }
