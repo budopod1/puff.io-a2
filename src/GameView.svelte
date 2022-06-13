@@ -6,7 +6,10 @@
     let conn = getContext('connection');
     // let timer = new Timer();
     conn.onpacket = (packet) => {
-        $world = update($world, packet);
+        if (packet) {
+            // console.log(packet);
+            $world = update($world, packet);
+        }
         // timer.tick();
         // console.log(timer.fps);
         // conn.send(input($keys)); // Add keydown sending

@@ -94,7 +94,11 @@ export class Connection {
         if (data instanceof ArrayBuffer) {
             connection.onpacket(decode(new Uint8Array(data.slice(1))));
         } else {
-            this.onstatus(JSON.parse(data.slice(1)));
+            if (data == "F") {
+                connection.onpacket(null);
+            } else {
+                this.onstatus(JSON.parse(data.slice(1)));
+            }
         }
     }
 }
