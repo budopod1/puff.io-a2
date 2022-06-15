@@ -7,6 +7,7 @@
     let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
     // let timer = new Timer();
     conn.onpacket = (packet) => {
+        conn.send(input($keys));
         if (packet) {
             // console.log(packet);
             world = update(world, packet);
@@ -14,7 +15,6 @@
         // timer.tick();
         // console.log(timer.fps);
         // conn.send(input($keys)); // Add keydown sending
-        conn.send(input($keys));
     };
     
     let canvas;
