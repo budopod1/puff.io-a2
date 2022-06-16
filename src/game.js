@@ -108,6 +108,7 @@ function zip(arrays) { // Modified from https://stackoverflow.com/questions/4856
 export function update(world, packet) {
     // Maybe add entity & tile data?
     let [tile_xs, tile_ys, tile_types, entity_xs, entity_ys, entity_types, player_index] = packet;
+    window.packet = packet; // For debugging
 
     world["player_x"] = entity_xs[player_index];
     world["player_y"] = entity_ys[player_index];
