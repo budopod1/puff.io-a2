@@ -143,6 +143,11 @@ export function render(assets, world, ctx, width, height) {
     let veiwHeight = 7;
     let cameraX = world["player_x"];
     let cameraY = world["player_y"];
+
+    let will_render = (screenSize, x, y) => {
+        return !(x + screenSize < 0 || x > width
+           || y + screenSize < 0 || y > height); 
+    }
     
     for (let tile of Object.values(world.tilemap)) {
         if (tile.type != 0) {
@@ -157,12 +162,17 @@ export function render(assets, world, ctx, width, height) {
             let y = -(tile["y"] - cameraY) * scale + height / 2;
             x -= scale / 2;
             y -= scale / 2;
+            let screenSize = scale * size;
+            if (!will_render(screenSize, x, y)) {
+                // console.log("hi!");
+                continue;
+            }
             ctx.drawImage(
                 image,
                 x,
                 y,
-                scale * size,
-                scale * size
+                screenSize,
+                screenSize
             );
         }
     }
