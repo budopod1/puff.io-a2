@@ -38,7 +38,7 @@ export class Timer {
 export class Connection {
     constructor() {
         this.conn = null;
-        this.onpacket = (data) => {};
+        this.onpacket = (respond, data) => {};
         this.onstatus = (data) => {};
         this.onconnect = () => {};
     }
@@ -86,10 +86,16 @@ export class Connection {
         */
         let connection = this;
         if (data instanceof ArrayBuffer) {
-            connection.onpacket(decode(new Uint8Array(data.slice(1))));
+            let gameData = decode(new Uint8Array(data.slice(1)));
+            // console.log(new Uint8Array(data)[0]);
+            if (new Uint8Array(data)[0] == 82) {
+                connection.onpacket(true, gameData);
+            } else {
+                connection.onpacket(false, gameData);
+            }
         } else {
             if (data == "F") {
-                connection.onpacket(null);
+                connection.onpacket(false, null);
             } else {
                 this.onstatus(JSON.parse(data.slice(1)));
             }
