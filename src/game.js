@@ -113,7 +113,7 @@ function zip(arrays) { // Modified from https://stackoverflow.com/questions/4856
 
 export function update(world, packet) {
     // Maybe add entity & tile data?
-    let [tile_xs, tile_ys, tile_types, entity_xs, entity_ys, entity_types, player_index] = packet;
+    let [tile_xs, tile_ys, tile_types, entity_xs, entity_ys, entity_ids, player_index] = packet;
     window.packet = packet; // For debugging
 
     world["player_x"] = entity_xs[player_index];
@@ -128,11 +128,11 @@ export function update(world, packet) {
     }
 
     world["entities"] = [];
-    for (let [entity_x, entity_y, entity_type] of zip([entity_xs, entity_ys, entity_types])) {
+    for (let [entity_x, entity_y, entity_id] of zip([entity_xs, entity_ys, entity_ids])) {
         world["entities"].push({
             x: entity_x,
             y: entity_y,
-            type: entity_type
+            id: entity_id
         });
     }
 
@@ -161,7 +161,6 @@ export function render(assets, world, ctx, width, height) {
                 1: "grass"
             }[tile.type];
             let image = assets[name + ".png"];
-            // console.log(image, assets, name + ".png");
             let size = 1
             let scale = height / veiwHeight;
             let x = (tile["x"] - cameraX) * scale + width / 2;
@@ -170,7 +169,6 @@ export function render(assets, world, ctx, width, height) {
             y -= scale / 2;
             let screenSize = scale * size;
             if (!will_render(screenSize, x, y)) {
-                // console.log("hi!");
                 continue;
             }
             ctx.drawImage(
@@ -184,14 +182,16 @@ export function render(assets, world, ctx, width, height) {
     }
 
     for (let entity of world.entities) {
+        // console.log(entity.id + 126);
+        // console.log(Math.floor((entity.id + 126) / 16))
         let name = {
             1: "puff"
-        }[entity.type];
+        }[Math.floor((entity.id + 126) / 16)];
         let image = assets[name + ".png"];
         let size = 1
         let scale = height / veiwHeight;
-        let x = (entity["x"] - cameraX) * scale + width / 2;
-        let y = -(entity["y"] - cameraY) * scale + height / 2;
+        let x = (entity.x - cameraX) * scale + width / 2;
+        let y = -(entity.y - cameraY) * scale + height / 2;
         x -= scale / 2;
         y -= scale / 2;
         ctx.drawImage(
