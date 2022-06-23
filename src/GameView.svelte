@@ -7,6 +7,7 @@
     let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
     // let timer = new Timer();
     conn.onpacket = (respond, packet) => {
+        window._packet = packet;
         if (respond) {
             conn.send(input($keys));
         }
@@ -96,7 +97,10 @@
         for (let tile of Object.values(world.tilemap)) {
             if (tile.type != 0) {
                 let name = {
-                    1: "grass"
+                    1: "grass",
+                    2: "wood",
+                    3: "leaves",
+                    4: "stone"
                 }[tile.type];
                 let image = $assets[name + ".png"];
                 let size = 1
