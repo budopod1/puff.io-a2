@@ -43,6 +43,9 @@
     
     onMount(() => {
 		ctx = canvas.getContext('2d');
+        ctx.webkitImageSmoothingEnabled = false;
+        ctx.mozImageSmoothingEnabled = false;
+        ctx.imageSmoothingEnabled = false;
         animationFrame = requestAnimationFrame(frame);
 
 		return () => {
@@ -100,7 +103,8 @@
                     1: "grass",
                     2: "wood",
                     3: "leaves",
-                    4: "stone"
+                    4: "stone",
+                    5: "flowers"
                 }[tile.type];
                 let image = $assets[name + ".png"];
                 let size = 1
@@ -174,5 +178,16 @@
         display: flex;
         justify-content: center;
         background-color: black;
+    }
+
+    canvas {
+        image-rendering: optimizeSpeed;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: -o-crisp-edges;
+        image-rendering: crisp-edges;
+        image-rendering: pixelated;
+        -ms-interpolation-mode: nearest-neighbor;
     }
 </style>
