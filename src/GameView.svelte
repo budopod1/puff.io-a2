@@ -162,12 +162,16 @@
     }
 
     function input(keySet) {
-        let keys = Array.from(keySet);
-        let keyBytes = new Uint8Array(keys.length);
-        for (let key in keys) {
-            keyBytes[key] = keys[key];
+        let outputType = 75; // K or keys
+        if (outputType == 75) {
+            let keys = Array.from(keySet);
+            let keyBytes = new Uint8Array(keys.length + 1);
+            keyBytes[0] = 75;
+            for (let key = 0; key < keys.length + 1; key++) {
+                keyBytes[key + 1] = keys[key];
+            }
+            return keyBytes.buffer;
         }
-        return keyBytes.buffer;
     }
     
     onMount(() => {
