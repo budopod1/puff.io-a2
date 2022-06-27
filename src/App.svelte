@@ -9,28 +9,9 @@
     let loadedAssets = {};
     let page = "waiting";
 
-    for (let assetName of assetNames) {
-        let imageURL = new URL("assets/" + assetName, import.meta.url).href;
-        let assetImage = new Image();
-        assetImage.src = imageURL;
-        assetImage.onload = () => {
-            loadedAssets[assetName] = assetImage
-            assets.set(loadedAssets);
-        }
-    }
-
     // Connect to the server
     let conn;
     setContext('connection', () => conn);
-
-    onMount(() => {
-        conn = new WebSocket("wss://backend.puffio.repl.co/ws");
-        conn.binaryType = "arraybuffer";
-    
-        conn.onopen = () => {
-            page = "game";
-        };
-    });
 
     // Add keydown listeners
     window.onkeydown = (e) => {
@@ -40,6 +21,25 @@
     window.onkeyup = (e) => {
         $keys.delete(e.keyCode);
     }
+
+    onMount(() => {
+        for (let assetName of assetNames) {
+            let imageURL = new URL("assets/" + assetName, import.meta.url).href;
+            let assetImage = new Image();
+            assetImage.src = imageURL;
+            assetImage.onload = () => {
+                loadedAssets[assetName] = assetImage
+                assets.set(loadedAssets);
+            }
+        }
+        
+        conn = new WebSocket("wss://backend.puffio.repl.co/ws");
+        conn.binaryType = "arraybuffer";
+    
+        conn.onopen = () => {
+            page = "game";
+        };
+    });
 </script>
 <!-- // data:text/html,<script>d=document;d.onkeydown=e=>d.body.innerText=e.keyCode</script> -->
 

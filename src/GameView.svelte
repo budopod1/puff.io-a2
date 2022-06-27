@@ -37,7 +37,6 @@
     };
     
     let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
-    
     let canvas;
     let ctx;
     let width;
@@ -58,20 +57,6 @@
             throw err;
         }
     }
-    
-    onMount(() => {
-        conn.send("connect");
-        
-		ctx = canvas.getContext('2d');
-        ctx.webkitImageSmoothingEnabled = false;
-        ctx.mozImageSmoothingEnabled = false;
-        ctx.imageSmoothingEnabled = false;
-        animationFrame = requestAnimationFrame(frame);
-
-		return () => {
-			cancelAnimationFrame(animationFrame);
-		};
-    });
 
     function zip(arrays) { // Modified from https://stackoverflow.com/questions/4856717/javascript-equivalent-of-pythons-zip-function
         return arrays[0].map(
@@ -127,6 +112,10 @@
                     5: "flowers"
                 }[tile.type];
                 let image = $assets[name + ".png"];
+                if (!image) {
+                    console.error(`Unable to draw tile ${tile.type}`);
+                    continue;
+                }
                 let size = 1
                 let scale = height / veiwHeight;
                 let x = (tile["x"] - cameraX) * scale + width / 2;
@@ -148,12 +137,14 @@
         }
     
         for (let entity of world.entities) {
-            // console.log(entity.id + 126);
-            // console.log(Math.floor((entity.id + 126) / 16))
             let name = {
                 1: "puff"
             }[Math.floor((entity.id + 126) / 16)];
             let image = $assets[name + ".png"];
+            if (!image) {
+                console.error(`Unable to draw entity ${tile.type}`);
+                continue;
+            }
             let size = 1
             let scale = height / veiwHeight;
             let x = (entity.x - cameraX) * scale + width / 2;
@@ -178,6 +169,20 @@
         }
         return keyBytes.buffer;
     }
+    
+    onMount(() => {
+        conn.send("connect");
+        
+		ctx = canvas.getContext('2d');
+        ctx.webkitImageSmoothingEnabled = false;
+        ctx.mozImageSmoothingEnabled = false;
+        ctx.imageSmoothingEnabled = false;
+        animationFrame = requestAnimationFrame(frame);
+
+		return () => {
+			cancelAnimationFrame(animationFrame);
+		};
+    });
 </script>
 
 <article>
