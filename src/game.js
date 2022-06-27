@@ -1,4 +1,3 @@
-import { decode } from "./shortsocket.js";
 import { writable } from 'svelte/store';
 
 
@@ -35,6 +34,7 @@ export class Timer {
 }
 
 
+/*
 export class Connection {
     constructor() {
         this.conn = null;
@@ -62,7 +62,7 @@ export class Connection {
     }
 
     message(data) {
-        /*
+        \/\*
         let connection = this;
         if (data instanceof Blob) {
             let result = "";
@@ -83,7 +83,7 @@ export class Connection {
         } else {
             this.onstatus(JSON.parse(data.slice(1)));
         }
-        */
+        \*\/
         let connection = this;
         if (data instanceof ArrayBuffer) {
             let gameData = decode(new Uint8Array(data.slice(1)));
@@ -102,3 +102,4 @@ export class Connection {
         }
     }
 }
+*/

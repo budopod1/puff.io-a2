@@ -1,5 +1,5 @@
 <script>
-    import { assets, Connection, keys } from "./game.js";
+    import { assets, keys } from "./game.js";
     import { setContext, onMount } from 'svelte';
     import GameView from "./GameView.svelte";
     import WaitingView from "./WaitingView.svelte";
@@ -20,22 +20,16 @@
     }
 
     // Connect to the server
-    let conn = new Connection();
-
-    setContext('connection', conn);
-
-    conn.onstatus = (data) => {
-        if (data.action == "connect") {
-            page = "game";
-        }
-    };
-
-    conn.onconnect = () => {
-        conn.send("connect");
-    }
+    let conn;
+    setContext('connection', () => conn);
 
     onMount(() => {
-        conn.connect("wss://backend.puffio.repl.co/ws");
+        conn = new WebSocket("wss://backend.puffio.repl.co/ws");
+        conn.binaryType = "arraybuffer";
+    
+        conn.onopen = () => {
+            page = "game";
+        };
     });
 
     // Add keydown listeners

@@ -2,23 +2,41 @@
     import { assets, keys } from "./game.js";
 	import { onMount } from 'svelte';
     import { getContext } from 'svelte';
+    import { decode } from "./shortsocket.js";
 
-    let conn = getContext('connection');
-    let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
+    let conn = getContext('connection')();
+    
     // let timer = new Timer();
-    conn.onpacket = (respond, packet) => {
-        window._packet = packet;
-        if (respond) {
-            conn.send(input($keys));
+    conn.onmessage = (e) => {
+        let data = e.data;
+        
+        if (data instanceof ArrayBuffer) {
+            let packet = decode(new Uint8Array(data.slice(1)));
+            // console.log(new Uint8Array(data)[0]);
+            let respond = new Uint8Array(data)[0] == 82;
+            
+            window._packet = packet;
+            if (respond) {
+                conn.send(input($keys));
+            }
+            if (packet) {
+                // console.log(packet);
+                update(packet);
+            }
+        } else {
+            if (data[0] != "S") {
+                return;
+            }
+            data = data.slice(1);
+            let msg = JSON.parse(data);
+            if (msg.action == "connect") {
+                console.log("Conntected to the server!");
+                // page = "game";
+            }
         }
-        if (packet) {
-            // console.log(packet);
-            update(packet);
-        }
-        // timer.tick();
-        // console.log(timer.fps);
-        // conn.send(input($keys));
     };
+    
+    let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
     
     let canvas;
     let ctx;
@@ -42,6 +60,8 @@
     }
     
     onMount(() => {
+        conn.send("connect");
+        
 		ctx = canvas.getContext('2d');
         ctx.webkitImageSmoothingEnabled = false;
         ctx.mozImageSmoothingEnabled = false;
