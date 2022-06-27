@@ -1,5 +1,5 @@
 <script>
-    import { assets, keys } from "./game.js";
+    import { assets, keys } from "./globals.js";
 	import { onMount } from 'svelte';
     import { getContext } from 'svelte';
     import { decode } from "./shortsocket.js";

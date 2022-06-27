@@ -1,5 +1,5 @@
 <script>
-    import { assets, keys } from "./game.js";
+    import { assets, keys } from "./globals.js";
     import { setContext, onMount } from 'svelte';
     import GameView from "./GameView.svelte";
     import WaitingView from "./WaitingView.svelte";
