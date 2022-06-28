@@ -3,8 +3,25 @@
 	import { onMount } from 'svelte';
     import { getContext } from 'svelte';
     import { decode } from "./shortsocket.js";
+    
+    let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
+    let canvas;
+    let lastKeys = new Set();
+    let ctx;
+    let width;
+    let height;
+    let maxWidth;
+    let maxRatio = 3;
+    let animationFrame;
+    $: if (canvas) canvas.width = Math.min(
+        width, height * maxRatio
+    );
+    $: if (canvas) canvas.height = height;
 
     let conn = getContext('connection')();
+    
+    window._world = world;
+    window._websocket = conn;
     
     // let timer = new Timer();
     conn.onmessage = (e) => {
@@ -17,7 +34,7 @@
             
             window._packet = packet;
             if (respond) {
-                conn.send(input($keys));
+                conn.send(input());
             }
             if (packet) {
                 // console.log(packet);
@@ -31,23 +48,9 @@
             let msg = JSON.parse(data);
             if (msg.action == "connect") {
                 console.log("Conntected to the server!");
-                // page = "game";
             }
         }
     };
-    
-    let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
-    let canvas;
-    let ctx;
-    let width;
-    let height;
-    let maxWidth;
-    let maxRatio = 3;
-    let animationFrame;
-    $: if (canvas) canvas.width = Math.min(
-        width, height * maxRatio
-    );
-    $: if (canvas) canvas.height = height;
 
     function frame() {
         try {
@@ -161,16 +164,28 @@
         }
     }
 
-    function input(keySet) {
-        let outputType = 75; // K or keys
-        if (outputType == 75) {
-            let keys = Array.from(keySet);
-            let keyBytes = new Uint8Array(keys.length + 1);
-            keyBytes[0] = 75;
-            for (let key = 0; key < keys.length + 1; key++) {
-                keyBytes[key + 1] = keys[key];
+    function input() {
+        let keysChanged = false;
+        if (lastKeys.size !== $keys.size) {
+            keysChanged = true;
+        };
+        for (let key of lastKeys) {
+            if (!$keys.has(key)) {
+                keysChanged = true;
+            };
+        }
+        if (keysChanged) {
+            lastKeys = new Set($keys);
+            let keyBytes = new Uint8Array($keys.size + 1);
+            keyBytes[0] = 75; // K or keys
+            for (let key = 0; key < $keys.size; key++) {
+                keyBytes[key + 1] = Array.from($keys)[key];
             }
             return keyBytes.buffer;
+        } else {
+            let output = new Uint8Array(1);
+            output[0] = 78; // N or none
+            return output.buffer;
         }
     }
     
