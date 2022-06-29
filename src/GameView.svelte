@@ -14,6 +14,7 @@
     let height;
     let maxWidth;
     let maxRatio = 3;
+    let veiwHeight = 7;
     let animationFrame;
     $: if (canvas) canvas.width = Math.min(
         width, height * maxRatio
@@ -98,7 +99,6 @@
         ctx.fillStyle = "#3fd7e8";
         ctx.fillRect(0, 0, width, height);
     
-        let veiwHeight = 7;
         let cameraX = world["player_x"];
         let cameraY = world["player_y"];
     
@@ -198,12 +198,17 @@
         }
         
         if (mousePosChanged) {
-            let mouseBytes = new Uint8Array(5);
-            let mousePosFloats = new Float32Array([$mouseX, $mouseY]);
+            let mouseBytes = new Uint8Array(9);
+            let scale = height / veiwHeight;
+            let screenMouseX = $mouseX - width / 2;
+            screenMouseX /= scale;
+            let screenMouseY = $mouseY - width / 2;
+            screenMouseY /= scale;
+            let mousePosFloats = new Float32Array([screenMouseX, screenMouseY]);
             var mousePosBytes = new Uint8Array(mousePosFloats.buffer);
             mouseBytes[0] = 77;
             for (let i = 0; i < mousePosBytes.length; i++) {
-                mouseBytes[1 + i] = mousePosBytes;
+                mouseBytes[1 + i] = mousePosBytes[i];
             }
             return mouseBytes;
         }
