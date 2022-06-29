@@ -202,7 +202,7 @@
             let scale = height / veiwHeight;
             let screenMouseX = $mouseX - width / 2;
             screenMouseX /= scale;
-            let screenMouseY = $mouseY - width / 2;
+            let screenMouseY = $mouseY - height / 2;
             screenMouseY /= scale;
             let mousePosFloats = new Float32Array([screenMouseX, screenMouseY]);
             var mousePosBytes = new Uint8Array(mousePosFloats.buffer);
