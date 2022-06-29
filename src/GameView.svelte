@@ -1,5 +1,5 @@
 <script>
-    import { assets, keys } from "./globals.js";
+    import { assets, keys, mouseX, mouseY } from "./globals.js";
 	import { onMount } from 'svelte';
     import { getContext } from 'svelte';
     import { decode } from "./shortsocket.js";
@@ -7,6 +7,8 @@
     let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
     let canvas;
     let lastKeys = new Set();
+    let lastMouseX = 0;
+    let lastMouseY = 0;
     let ctx;
     let width;
     let height;
@@ -174,6 +176,7 @@
                 keysChanged = true;
             };
         }
+        
         if (keysChanged) {
             lastKeys = new Set($keys);
             let keyBytes = new Uint8Array($keys.size + 1);
@@ -182,11 +185,32 @@
                 keyBytes[key + 1] = Array.from($keys)[key];
             }
             return keyBytes.buffer;
-        } else {
-            let output = new Uint8Array(1);
-            output[0] = 78; // N or none
-            return output.buffer;
         }
+        
+        let mousePosChanged = false;
+        if ($mouseX != lastMouseX) {
+            mousePosChanged = true;
+            lastMouseX = $mouseX;
+        }
+        if ($mouseY != lastMouseY) {
+            mousePosChanged = true;
+            lastMouseY = $mouseY;
+        }
+        
+        if (mousePosChanged) {
+            let mouseBytes = new Uint8Array(5);
+            let mousePosFloats = new Float32Array([$mouseX, $mouseY]);
+            var mousePosBytes = new Uint8Array(mousePosFloats.buffer);
+            mouseBytes[0] = 77;
+            for (let i = 0; i < mousePosBytes.length; i++) {
+                mouseBytes[1 + i] = mousePosBytes;
+            }
+            return mouseBytes;
+        }
+        
+        let output = new Uint8Array(1);
+        output[0] = 78; // N or none
+        return output.buffer;
     }
     
     onMount(() => {
