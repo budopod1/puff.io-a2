@@ -145,7 +145,7 @@
             }[Math.floor((entity.id + 126) / 16)];
             let image = $assets[name + ".png"];
             if (!image) {
-                console.error(`Unable to draw entity ${tile.type}`);
+                console.error(`Unable to draw entity ${entity.id}`);
                 continue;
             }
             let size = 1
