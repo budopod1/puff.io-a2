@@ -1,5 +1,5 @@
 <script>
-    import { assets, keys, mouseX, mouseY } from "./globals.js";
+    import { assets, keys, mouseX, mouseY, mouseButtons } from "./globals.js";
 	import { onMount } from 'svelte';
     import { getContext } from 'svelte';
     import { decode } from "./shortsocket.js";
@@ -7,6 +7,7 @@
     let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
     let canvas;
     let lastKeys = new Set();
+    let lastMouseButtons = new Set();
     let lastMouseX = 0;
     let lastMouseY = 0;
     let ctx;
@@ -184,7 +185,7 @@
             for (let key = 0; key < $keys.size; key++) {
                 keyBytes[key + 1] = Array.from($keys)[key];
             }
-            return keyBytes.buffer;
+            return keyBytes;
         }
         
         let mousePosChanged = false;
@@ -212,14 +213,40 @@
             }
             return mouseBytes;
         }
+
+        let mouseButtonsChanged = false;
+        if (lastMouseButtons.size !== $mouseButtons.size) {
+            mouseButtonsChanged = true;
+        };
+        for (let button of lastMouseButtons) {
+            if (!$mouseButtons.has(button)) {
+                mouseButtonsChanged = true;
+            };
+        }
+
+        if (mouseButtonsChanged) {
+            lastMouseButtons = new Set($mouseButtons);
+            let mouseBytes = new Uint8Array(2);
+            for (let i = 0; i < 3; i++) {
+                if ($mouseButtons.has(i + 1)) {
+                    mouseBytes[1] += (1 << i);
+                }
+            }
+            mouseBytes[0] = 66;
+            return mouseBytes;
+        }
         
         let output = new Uint8Array(1);
         output[0] = 78; // N or none
-        return output.buffer;
+        return output;
     }
     
     onMount(() => {
         conn.send("connect");
+
+        canvas.oncontextmenu = (e) => {
+            e.preventDefault();
+        }
         
 		ctx = canvas.getContext('2d');
         ctx.webkitImageSmoothingEnabled = false;

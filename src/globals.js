@@ -8,11 +8,14 @@ let keys_ = writable(new Set());
 let mouseX_ = writable(0);
 let mouseY_ = writable(0);
 
+let mouseButtons_ = writable(new Set());
+
 export {
     assets_ as assets,
     keys_ as keys,
     mouseX_ as mouseX,
-    mouseY_ as mouseY
+    mouseY_ as mouseY,
+    mouseButtons_ as mouseButtons
 }
 
 

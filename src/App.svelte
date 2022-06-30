@@ -1,5 +1,5 @@
 <script>
-    import { assets, keys, mouseX, mouseY } from "./globals.js";
+    import { assets, keys, mouseX, mouseY, mouseButtons } from "./globals.js";
     import { setContext, onMount } from 'svelte';
     import GameView from "./GameView.svelte";
     import WaitingView from "./WaitingView.svelte";
@@ -20,6 +20,14 @@
 
     window.onkeyup = (e) => {
         $keys.delete(e.keyCode);
+    }
+
+    window.onmousedown = (e) => {
+        $mouseButtons.add(e.which);
+    }
+
+    window.onmouseup = (e) => {
+        $mouseButtons.delete(e.which);
     }
 
     document.onmousemove = (e) => {
