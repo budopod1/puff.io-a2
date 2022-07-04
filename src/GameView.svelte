@@ -187,32 +187,6 @@
             }
             return keyBytes;
         }
-        
-        let mousePosChanged = false;
-        if ($mouseX != lastMouseX) {
-            mousePosChanged = true;
-            lastMouseX = $mouseX;
-        }
-        if ($mouseY != lastMouseY) {
-            mousePosChanged = true;
-            lastMouseY = $mouseY;
-        }
-        
-        if (mousePosChanged) {
-            let mouseBytes = new Uint8Array(9);
-            let scale = height / veiwHeight;
-            let screenMouseX = $mouseX - width / 2;
-            screenMouseX /= scale;
-            let screenMouseY = $mouseY - height / 2;
-            screenMouseY /= scale;
-            let mousePosFloats = new Float32Array([screenMouseX, screenMouseY]);
-            var mousePosBytes = new Uint8Array(mousePosFloats.buffer);
-            mouseBytes[0] = 77;
-            for (let i = 0; i < mousePosBytes.length; i++) {
-                mouseBytes[1 + i] = mousePosBytes[i];
-            }
-            return mouseBytes;
-        }
 
         let mouseButtonsChanged = false;
         if (lastMouseButtons.size !== $mouseButtons.size) {
@@ -233,6 +207,32 @@
                 }
             }
             mouseBytes[0] = 66;
+            return mouseBytes;
+        }
+        
+        let mousePosChanged = false;
+        if ($mouseX != lastMouseX) {
+            mousePosChanged = true;
+            lastMouseX = $mouseX;
+        }
+        if ($mouseY != lastMouseY) {
+            mousePosChanged = true;
+            lastMouseY = $mouseY;
+        }
+        
+        if (mousePosChanged) {
+            let mouseBytes = new Uint8Array(9);
+            let scale = height / veiwHeight;
+            let screenMouseX = $mouseX - width / 2;
+            screenMouseX /= scale;
+            let screenMouseY = $mouseY - height / 2;
+            screenMouseY /= -scale;
+            let mousePosFloats = new Float32Array([screenMouseX, screenMouseY]);
+            var mousePosBytes = new Uint8Array(mousePosFloats.buffer);
+            mouseBytes[0] = 77;
+            for (let i = 0; i < mousePosBytes.length; i++) {
+                mouseBytes[1 + i] = mousePosBytes[i];
+            }
             return mouseBytes;
         }
         
