@@ -249,9 +249,6 @@
         }
         
 		ctx = canvas.getContext('2d');
-        ctx.webkitImageSmoothingEnabled = false;
-        ctx.mozImageSmoothingEnabled = false;
-        ctx.imageSmoothingEnabled = false;
         animationFrame = requestAnimationFrame(frame);
 
 		return () => {
@@ -281,14 +278,6 @@
     }
 
     canvas {
-        image-rendering: optimizeSpeed;
-        image-rendering: -moz-crisp-edges;
-        image-rendering: -webkit-crisp-edges;
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: -o-crisp-edges;
-        image-rendering: crisp-edges;
-        image-rendering: pixelated;
-        -ms-interpolation-mode: nearest-neighbor;
         cursor: default;
     }
 </style>
