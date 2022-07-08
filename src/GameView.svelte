@@ -10,6 +10,9 @@
     let lastMouseButtons = new Set();
     let lastMouseX = 0;
     let lastMouseY = 0;
+    let guiSize = 0.7;
+    let gui = 0;
+    let inventory = {};
     let ctx;
     let width;
     let height;
@@ -42,7 +45,7 @@
             }
             if (packet) {
                 // console.log(packet);
-                update(packet);
+                anyPacket(packet);
             }
         } else {
             if (data[0] != "S") {
@@ -70,8 +73,32 @@
             (_, i) => arrays.map(array => array[i])
         );
     }
+
+    function anyPacket(packet) {
+        if (packet.length == 7) {
+            gui = 0;
+            normalPacket(packet);
+        } else {
+            gui = packet[0][0];
+            switch (gui) {
+                case 1:
+                    inventoryPacket(packet);
+                    break;
+            }
+        }
+    }
+
+    function inventoryPacket(packet) {
+        let [_, items, amounts] = packet;
+
+        inventory = {};
+        for (let [rawItem, amount] of zip([items, amounts])) {
+            let item = String.fromCharCode(...rawItem);
+            inventory[item] = amount;
+        }
+    }
     
-    function update(packet) {
+    function normalPacket(packet) {
         // Maybe add entity & tile data?
         let [tile_xs, tile_ys, tile_types, entity_xs, entity_ys, entity_ids, player_index] = packet;
     
@@ -108,6 +135,8 @@
                || y + screenSize < 0 || y > height); 
         }
         
+        let scale = height / veiwHeight;
+        
         for (let tile of Object.values(world.tilemap)) {
             if (tile.type != 0) {
                 let name = {
@@ -122,8 +151,7 @@
                     console.error(`Unable to draw tile ${tile.type}`);
                     continue;
                 }
-                let size = 1
-                let scale = height / veiwHeight;
+                let size = 1;
                 let x = (tile["x"] - cameraX) * scale + width / 2;
                 let y = -(tile["y"] - cameraY) * scale + height / 2;
                 x -= scale / 2;
@@ -151,8 +179,7 @@
                 console.error(`Unable to draw entity ${entity.id}`);
                 continue;
             }
-            let size = 1
-            let scale = height / veiwHeight;
+            let size = 1;
             let x = (entity.x - cameraX) * scale + width / 2;
             let y = -(entity.y - cameraY) * scale + height / 2;
             x -= scale / 2;
@@ -164,6 +191,68 @@
                 scale * size,
                 scale * size
             );
+        }
+
+        if (gui != 0) {
+            renderGUI(gui);
+        }
+    }
+
+    function renderGUI(gui) {
+        // let guiHeight = height * guiSize;
+        let name = {
+            1: "inventory"
+        }[gui];
+        let image = $assets[name + ".png"];
+        /*
+        let guiWidth = guiHeight * image.naturalWidth / image.naturalHeight;
+        console.log(image);
+        ctx.drawImage(
+            image,
+            width / 2 - guiWidth / 2,
+            height / 2 - guiHeight / 2,
+            guiWidth,
+            guiHeight
+        )
+        */
+        if (["inventory"].includes(name)) {
+            let containerWidth = {
+                "inventory": 8
+            }[name];
+            let containerHeight = {
+                "inventory": 4
+            }[name];
+            let cellSize = guiSize * height / containerHeight;
+            let containerItems = {
+                "inventory": inventory
+            }[name];
+            /*
+            let containerCellSize = {
+                "inventory": 5/29
+            }
+            let containerCellBorder = {
+                "inventory": 1/29
+            }
+            */
+            let containerPos = {};
+            for (let i = 0; i < Object.keys(containerItems).length; i++) {
+                let x = i%containerWidth;
+                let y = Math.floor(i/containerHeight);
+                containerPos[`(${x}, ${y})`] = containerItems[i];
+            } 
+            for (let x = 0.5; x < containerWidth; x++) {
+                for (let y = 0.5; y < containerHeight; y++) {
+                    let rx = width / 2 + (x - containerWidth / 2) * cellSize;
+                    let ry = height / 2 + (y - containerHeight / 2) * cellSize;
+                    ctx.drawImage(
+                        image,
+                        rx - cellSize / 2,
+                        ry - cellSize / 2,
+                        cellSize,
+                        cellSize
+                    );
+                }
+            }
         }
     }
 
