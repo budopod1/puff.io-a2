@@ -11,8 +11,9 @@
     let lastMouseX = 0;
     let lastMouseY = 0;
     let guiSize = 0.7;
+    let containerItemScale = 0.5;
     let gui = 0;
-    let inventory = {};
+    let inventory = [];
     let ctx;
     let width;
     let height;
@@ -91,10 +92,10 @@
     function inventoryPacket(packet) {
         let [_, items, amounts] = packet;
 
-        inventory = {};
+        inventory = [];
         for (let [rawItem, amount] of zip([items, amounts])) {
             let item = String.fromCharCode(...rawItem);
-            inventory[item] = amount;
+            inventory.push([item, amount]);
         }
     }
     
@@ -199,22 +200,10 @@
     }
 
     function renderGUI(gui) {
-        // let guiHeight = height * guiSize;
         let name = {
             1: "inventory"
         }[gui];
         let image = $assets[name + ".png"];
-        /*
-        let guiWidth = guiHeight * image.naturalWidth / image.naturalHeight;
-        console.log(image);
-        ctx.drawImage(
-            image,
-            width / 2 - guiWidth / 2,
-            height / 2 - guiHeight / 2,
-            guiWidth,
-            guiHeight
-        )
-        */
         if (["inventory"].includes(name)) {
             let containerWidth = {
                 "inventory": 8
@@ -223,27 +212,22 @@
                 "inventory": 4
             }[name];
             let cellSize = guiSize * height / containerHeight;
+            let itemSize = containerItemScale * cellSize;
             let containerItems = {
                 "inventory": inventory
             }[name];
-            /*
-            let containerCellSize = {
-                "inventory": 5/29
-            }
-            let containerCellBorder = {
-                "inventory": 1/29
-            }
-            */
             let containerPos = {};
             for (let i = 0; i < Object.keys(containerItems).length; i++) {
                 let x = i%containerWidth;
                 let y = Math.floor(i/containerHeight);
                 containerPos[`(${x}, ${y})`] = containerItems[i];
-            } 
-            for (let x = 0.5; x < containerWidth; x++) {
-                for (let y = 0.5; y < containerHeight; y++) {
-                    let rx = width / 2 + (x - containerWidth / 2) * cellSize;
-                    let ry = height / 2 + (y - containerHeight / 2) * cellSize;
+            }
+            ctx.font = `${itemSize}px JetBrains Mono`;
+            ctx.textBaseline = "middle";
+            for (let x = 0; x < containerWidth; x++) {
+                for (let y = 0; y < containerHeight; y++) {
+                    let rx = width/2 + (x + 0.5 - containerWidth/2) * cellSize;
+                    let ry = height/2 + (y + 0.5 - containerHeight/2) * cellSize;
                     ctx.drawImage(
                         image,
                         rx - cellSize / 2,
@@ -251,6 +235,24 @@
                         cellSize,
                         cellSize
                     );
+                    let slot = containerPos[`(${x}, ${y})`];
+                    if (slot) {
+                        let [item, amount] = slot;
+                        let image = $assets[item + ".png"];
+                        ctx.drawImage(
+                            image,
+                            rx - itemSize / 2,
+                            ry - itemSize / 2,
+                            itemSize,
+                            itemSize
+                        );
+                        ctx.fillStyle = "black";
+                        ctx.fillText(
+                            amount.toString(),
+                            rx,
+                            ry
+                        );
+                    }
                 }
             }
         }
@@ -287,7 +289,7 @@
             };
         }
 
-        if (mouseButtonsChanged) {
+        if (mouseButtonsChanged && gui == 0) {
             lastMouseButtons = new Set($mouseButtons);
             let mouseBytes = new Uint8Array(2);
             for (let i = 0; i < 3; i++) {
@@ -309,7 +311,7 @@
             lastMouseY = $mouseY;
         }
         
-        if (mousePosChanged) {
+        if (mousePosChanged && gui == 0) {
             let mouseBytes = new Uint8Array(9);
             let scale = height / veiwHeight;
             let screenMouseX = $mouseX - width / 2;
