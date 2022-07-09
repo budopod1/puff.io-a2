@@ -224,6 +224,7 @@
             }
             ctx.font = `${itemSize}px JetBrains Mono`;
             ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
             for (let x = 0; x < containerWidth; x++) {
                 for (let y = 0; y < containerHeight; y++) {
                     let rx = width/2 + (x + 0.5 - containerWidth/2) * cellSize;
