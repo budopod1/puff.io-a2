@@ -12,6 +12,8 @@
     let lastMouseY = 0;
     let guiSize = 0.7;
     let containerItemScale = 0.5;
+    let selectedScale = 0.75;
+    let selected = 0;
     let gui = 0;
     let inventory = [];
     let ctx;
@@ -20,6 +22,16 @@
     let maxWidth;
     let maxRatio = 3;
     let veiwHeight = 7;
+    let tileIDs = {
+        1: "grass",
+        2: "wood",
+        3: "leaves",
+        4: "stone",
+        5: "flowers"
+    };
+    let entityIDs = {
+        1: "puff"
+    };
     let animationFrame;
     $: if (canvas) canvas.width = Math.min(
         width, height * maxRatio
@@ -101,7 +113,13 @@
     
     function normalPacket(packet) {
         // Maybe add entity & tile data?
-        let [tile_xs, tile_ys, tile_types, entity_xs, entity_ys, entity_ids, player_index] = packet;
+        let [tile_xs, tile_ys, tile_types, entity_xs, entity_ys, entity_ids, more_data] = packet;
+
+        let player_index = more_data[0];
+
+        if (more_data.length == 2) {
+            selected = more_data[1];
+        }
     
         world["player_x"] = entity_xs[player_index];
         world["player_y"] = entity_ys[player_index];
@@ -140,13 +158,7 @@
         
         for (let tile of Object.values(world.tilemap)) {
             if (tile.type != 0) {
-                let name = {
-                    1: "grass",
-                    2: "wood",
-                    3: "leaves",
-                    4: "stone",
-                    5: "flowers"
-                }[tile.type];
+                let name = tileIDs[tile.type];
                 let image = $assets[name + ".png"];
                 if (!image) {
                     console.error(`Unable to draw tile ${tile.type}`);
@@ -172,9 +184,7 @@
         }
     
         for (let entity of world.entities) {
-            let name = {
-                1: "puff"
-            }[Math.floor((entity.id + 126) / 16)];
+            let name = entityIDs[Math.floor((entity.id + 126) / 16)];
             let image = $assets[name + ".png"];
             if (!image) {
                 console.error(`Unable to draw entity ${entity.id}`);
@@ -196,6 +206,19 @@
 
         if (gui != 0) {
             renderGUI(gui);
+        }
+
+        if (selected) {
+            let selectedName = tileIDs[selected];
+            let selectedImage = $assets[selectedName + ".png"];
+            let selectedSize = selectedScale * scale;
+            ctx.drawImage(
+                selectedImage,
+                0,
+                height - selectedSize,
+                selectedSize,
+                selectedSize
+            );
         }
     }
 
