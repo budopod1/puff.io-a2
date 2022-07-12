@@ -1,2 +1,2 @@
 run = "npm run dev"
-entrypoint = "src/App.svelt"
+entrypoint = "src/App.svelte"

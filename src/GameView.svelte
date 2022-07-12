@@ -104,11 +104,7 @@
     function inventoryPacket(packet) {
         let [_, items, amounts] = packet;
 
-        inventory = [];
-        for (let [rawItem, amount] of zip([items, amounts])) {
-            let item = String.fromCharCode(...rawItem);
-            inventory.push([item, amount]);
-        }
+        inventory = zip([items, amounts]);
     }
     
     function normalPacket(packet) {
@@ -262,7 +258,8 @@
                     let slot = containerPos[`(${x}, ${y})`];
                     if (slot) {
                         let [item, amount] = slot;
-                        let image = $assets[item + ".png"];
+                        let name = tileIDs[item];
+                        let image = $assets[name + ".png"];
                         ctx.drawImage(
                             image,
                             rx - itemSize / 2,
