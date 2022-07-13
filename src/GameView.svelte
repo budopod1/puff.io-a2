@@ -1,5 +1,5 @@
 <script>
-    import { assets, keys, mouseX, mouseY, mouseButtons } from "./globals.js";
+    import { assets, keys, mouseX, mouseY, mouseButtons, mouseWheel } from "./globals.js";
 	import { onMount } from 'svelte';
     import { getContext } from 'svelte';
     import { decode } from "./shortsocket.js";
@@ -300,6 +300,18 @@
             return keyBytes;
         }
 
+        if ($mouseWheel) {
+            let wheelBytes = new Uint8Array(5);
+            wheelBytes[0] = 87; // W or wheel
+            let wheelFloat = new Float32Array([$mouseWheel]);
+            var wheelFloatBytes = new Uint8Array(wheelFloat.buffer);
+            for (let i = 0; i < 4; i++) {
+                wheelBytes[i + 1] = wheelFloatBytes[i];
+            }
+            $mouseWheel = 0;
+            return wheelBytes;
+        }
+
         let mouseButtonsChanged = false;
         if (lastMouseButtons.size !== $mouseButtons.size) {
             mouseButtonsChanged = true;
@@ -342,7 +354,7 @@
             let mousePosFloats = new Float32Array([screenMouseX, screenMouseY]);
             var mousePosBytes = new Uint8Array(mousePosFloats.buffer);
             mouseBytes[0] = 77;
-            for (let i = 0; i < mousePosBytes.length; i++) {
+            for (let i = 0; i < 8; i++) {
                 mouseBytes[1 + i] = mousePosBytes[i];
             }
             return mouseBytes;

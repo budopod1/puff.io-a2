@@ -1,5 +1,5 @@
-<script>
-    import { assets, keys, mouseX, mouseY, mouseButtons } from "./globals.js";
+ <script>
+    import { assets, keys, mouseX, mouseY, mouseButtons, mouseWheel } from "./globals.js";
     import { setContext, onMount } from 'svelte';
     import GameView from "./GameView.svelte";
     import WaitingView from "./WaitingView.svelte";
@@ -28,6 +28,11 @@
 
     window.onmouseup = (e) => {
         $mouseButtons.delete(e.which);
+    }
+
+    window.onwheel = (e) => {
+        let movement = e.deltaX || e.deltaY || e.deltaZ || 0;
+        $mouseWheel += movement;
     }
 
     document.onmousemove = (e) => {
