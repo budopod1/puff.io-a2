@@ -27,7 +27,8 @@
         2: "wood",
         3: "leaves",
         4: "stone",
-        5: "flowers"
+        5: "flowers",
+        6: "trader1"
     };
     let entityIDs = {
         1: "puff"
