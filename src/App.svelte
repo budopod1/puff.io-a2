@@ -5,7 +5,7 @@
     import WaitingView from "./WaitingView.svelte";
 
     // Load the assets
-    let assetNames = ["puff.png", "grass.png", "stone.png", "leaves.png", "wood.png", "flowers.png", "inventory.png", "trader1.png"];
+    let assetNames = ["puff.png", "grass.png", "stone.png", "leaves.png", "wood.png", "flowers.png", "cell.png", "trader1.png", "empty.png"];
     let loadedAssets = {};
     let page = "waiting";
 
@@ -59,7 +59,7 @@
         };
     });
 </script>
-<!-- // data:text/html,<script>d=document;d.onkeydown=e=>d.body.innerText=e.keyCode</script> -->
+<!-- data:text/html,<script>d=document;d.onkeydown=e=>d.body.innerText=e.keyCode</script> -->
 
 <main>
     {#if page == "game"}

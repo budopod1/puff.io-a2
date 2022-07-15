@@ -16,6 +16,7 @@
     let selected = 0;
     let gui = 0;
     let inventory = [];
+    let trades = [];
     let ctx;
     let width;
     let height;
@@ -23,6 +24,7 @@
     let maxRatio = 3;
     let veiwHeight = 7;
     let tileIDs = {
+        '-1': "empty", // https://stackoverflow.com/questions/8182183/javascript-assoc-array-with-negative-int-keys
         1: "grass",
         2: "wood",
         3: "leaves",
@@ -50,7 +52,6 @@
         
         if (data instanceof ArrayBuffer) {
             let packet = decode(new Uint8Array(data.slice(1)));
-            // console.log(new Uint8Array(data)[0]);
             let respond = new Uint8Array(data)[0] == 82;
             
             window._packet = packet;
@@ -58,7 +59,6 @@
                 conn.send(input());
             }
             if (packet) {
-                // console.log(packet);
                 anyPacket(packet);
             }
         } else {
@@ -93,23 +93,24 @@
             gui = 0;
             normalPacket(packet);
         } else {
-            gui = packet[0][0];
+            let [gui_, items, amounts] = packet;
+            gui = gui_[0];
+            let newContainer = zip([items, amounts]);
             switch (gui) {
                 case 1:
-                    inventoryPacket(packet);
+                    inventory = newContainer;
                     break;
+                case 2:
+                    trades = newContainer;
+                    break;
+                default:
+                    console.error(`GUI ${gui} not implemented`);
             }
         }
     }
-
-    function inventoryPacket(packet) {
-        let [_, items, amounts] = packet;
-
-        inventory = zip([items, amounts]);
-    }
     
     function normalPacket(packet) {
-        // Maybe add entity & tile data?
+        // Maybe add entity & tile data?w
         let [tile_xs, tile_ys, tile_types, entity_xs, entity_ys, entity_ids, more_data] = packet;
 
         let player_index = more_data[0];
@@ -221,25 +222,31 @@
 
     function renderGUI(gui) {
         let name = {
-            1: "inventory"
+            1: "inventory",
+            2: "trades"
         }[gui];
-        let image = $assets[name + ".png"];
-        if (["inventory"].includes(name)) {
+        // Check for container guis
+        if (["inventory", "trades"].includes(name)) {
+            let cellImage = $assets["cell.png"];
             let containerWidth = {
-                "inventory": 8
+                "inventory": 8,
+                "trades": 9
             }[name];
             let containerHeight = {
-                "inventory": 4
+                "inventory": 4,
+                "trades": 5
             }[name];
             let cellSize = guiSize * height / containerHeight;
             let itemSize = containerItemScale * cellSize;
             let containerItems = {
-                "inventory": inventory
+                "inventory": inventory,
+                "trades": trades
             }[name];
             let containerPos = {};
-            for (let i = 0; i < Object.keys(containerItems).length; i++) {
+            for (let i = 0; i < containerItems.length; i++) {
                 let x = i%containerWidth;
-                let y = Math.floor(i/containerHeight);
+                let y = Math.floor(i/containerWidth);
+                console.log(`(${x}, ${y}) ${i}`);
                 containerPos[`(${x}, ${y})`] = containerItems[i];
             }
             ctx.font = `${itemSize}px JetBrains Mono`;
@@ -250,7 +257,7 @@
                     let rx = width/2 + (x + 0.5 - containerWidth/2) * cellSize;
                     let ry = height/2 + (y + 0.5 - containerHeight/2) * cellSize;
                     ctx.drawImage(
-                        image,
+                        cellImage,
                         rx - cellSize / 2,
                         ry - cellSize / 2,
                         cellSize,
@@ -259,21 +266,27 @@
                     let slot = containerPos[`(${x}, ${y})`];
                     if (slot) {
                         let [item, amount] = slot;
+                        if (item == 0) {
+                            continue;
+                        }
                         let name = tileIDs[item];
                         let image = $assets[name + ".png"];
+                        let thisItemSize = item < 0 ? cellSize : itemSize;
                         ctx.drawImage(
                             image,
-                            rx - itemSize / 2,
-                            ry - itemSize / 2,
-                            itemSize,
-                            itemSize
+                            rx - thisItemSize / 2,
+                            ry - thisItemSize / 2,
+                            thisItemSize,
+                            thisItemSize
                         );
-                        ctx.fillStyle = "black";
-                        ctx.fillText(
-                            amount.toString(),
-                            rx,
-                            ry
-                        );
+                        if (amount > 1) {
+                            ctx.fillStyle = "black";
+                            ctx.fillText(
+                                amount.toString(),
+                                rx,
+                                ry
+                            );
+                        }
                     }
                 }
             }
