@@ -25,6 +25,7 @@
     let veiwHeight = 7;
     let tileIDs = {
         '-1': "empty", // https://stackoverflow.com/questions/8182183/javascript-assoc-array-with-negative-int-keys
+        '-2': "arrow",
         1: "grass",
         2: "wood",
         3: "leaves",
