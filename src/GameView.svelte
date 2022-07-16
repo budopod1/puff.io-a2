@@ -249,7 +249,7 @@
                 console.log(`(${x}, ${y}) ${i}`);
                 containerPos[`(${x}, ${y})`] = containerItems[i];
             }
-            ctx.font = `${itemSize}px JetBrains Mono`;
+            ctx.font = `bold ${itemSize}px JetBrains Mono`;
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
             for (let x = 0; x < containerWidth; x++) {
@@ -282,6 +282,12 @@
                         if (amount > 1) {
                             ctx.fillStyle = "black";
                             ctx.fillText(
+                                amount.toString(),
+                                rx,
+                                ry
+                            );
+                            ctx.strokeStyle = "white";
+                            ctx.strokeText(
                                 amount.toString(),
                                 rx,
                                 ry
