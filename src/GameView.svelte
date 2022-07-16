@@ -210,6 +210,14 @@
             let selectedName = tileIDs[selected];
             let selectedImage = $assets[selectedName + ".png"];
             let selectedSize = selectedScale * scale;
+            ctx.fillStyle = "black";
+            let outline = 3;
+            ctx.fillRect(
+                -outline,
+                height - selectedSize - outline,
+                selectedSize + outline * 2,
+                selectedSize + outline * 2
+            );
             ctx.drawImage(
                 selectedImage,
                 0,
