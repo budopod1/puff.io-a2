@@ -255,10 +255,8 @@
             for (let i = 0; i < containerItems.length; i++) {
                 let x = i%containerWidth;
                 let y = Math.floor(i/containerWidth);
-                console.log(`(${x}, ${y}) ${i}`);
                 containerPos[`(${x}, ${y})`] = containerItems[i];
             }
-            ctx.font = `bold ${itemSize}px JetBrains Mono`;
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
             for (let x = 0; x < containerWidth; x++) {
@@ -289,18 +287,21 @@
                             thisItemSize
                         );
                         if (amount > 1) {
+                            ctx.font = `bold ${itemSize}px JetBrains Mono`;
+                            ctx.fillStyle = "white";
+                            ctx.fillText(
+                                amount.toString(),
+                                rx,
+                                ry
+                            );
+                            ctx.font = `${itemSize}px JetBrains Mono`;
                             ctx.fillStyle = "black";
                             ctx.fillText(
                                 amount.toString(),
                                 rx,
                                 ry
                             );
-                            ctx.strokeStyle = "white";
-                            ctx.strokeText(
-                                amount.toString(),
-                                rx,
-                                ry
-                            );
+                            // TODO: Flat is better than nested?
                         }
                     }
                 }
