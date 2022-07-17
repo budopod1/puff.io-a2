@@ -15,8 +15,7 @@
     let selectedScale = 0.75;
     let selected = 0;
     let gui = 0;
-    let inventory = [];
-    let trades = [];
+    let container = [];
     let ctx;
     let width;
     let height;
@@ -96,17 +95,7 @@
         } else {
             let [gui_, items, amounts] = packet;
             gui = gui_[0];
-            let newContainer = zip([items, amounts]);
-            switch (gui) {
-                case 1:
-                    inventory = newContainer;
-                    break;
-                case 2:
-                    trades = newContainer;
-                    break;
-                default:
-                    console.error(`GUI ${gui} not implemented`);
-            }
+            container = zip([items, amounts]);
         }
     }
     
@@ -203,8 +192,8 @@
             );
         }
 
-        if (gui != 0) {
-            renderGUI(gui);
+        if (gui) {
+            renderGUI();
         }
 
         if (selected) {
@@ -229,80 +218,72 @@
         }
     }
 
-    function renderGUI(gui) {
+    function renderGUI() {
         let name = {
             1: "inventory",
             2: "trades"
         }[gui];
-        // Check for container guis
-        if (["inventory", "trades"].includes(name)) {
-            let cellImage = $assets["cell.png"];
-            let containerWidth = {
-                "inventory": 8,
-                "trades": 9
-            }[name];
-            let containerHeight = {
-                "inventory": 4,
-                "trades": 5
-            }[name];
-            let cellSize = guiSize * height / containerHeight;
-            let itemSize = containerItemScale * cellSize;
-            let containerItems = {
-                "inventory": inventory,
-                "trades": trades
-            }[name];
-            let containerPos = {};
-            for (let i = 0; i < containerItems.length; i++) {
-                let x = i%containerWidth;
-                let y = Math.floor(i/containerWidth);
-                containerPos[`(${x}, ${y})`] = containerItems[i];
-            }
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            for (let x = 0; x < containerWidth; x++) {
-                for (let y = 0; y < containerHeight; y++) {
-                    let rx = width/2 + (x + 0.5 - containerWidth/2) * cellSize;
-                    let ry = height/2 + (y + 0.5 - containerHeight/2) * cellSize;
+        let cellImage = $assets["cell.png"];
+        let containerWidth = {
+            "inventory": 8,
+            "trades": 9
+        }[name];
+        let containerHeight = {
+            "inventory": 4,
+            "trades": 5
+        }[name];
+        let cellSize = guiSize * height / containerHeight;
+        let itemSize = containerItemScale * cellSize;
+        let containerPos = {};
+        for (let i = 0; i < container.length; i++) {
+            let x = i%containerWidth;
+            let y = Math.floor(i/containerWidth);
+            containerPos[`(${x}, ${y})`] = container[i];
+        }
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        for (let x = 0; x < containerWidth; x++) {
+            for (let y = 0; y < containerHeight; y++) {
+                let rx = width/2 + (x + 0.5 - containerWidth/2) * cellSize;
+                let ry = height/2 + (y + 0.5 - containerHeight/2) * cellSize;
+                ctx.drawImage(
+                    cellImage,
+                    rx - cellSize / 2,
+                    ry - cellSize / 2,
+                    cellSize,
+                    cellSize
+                );
+                let slot = containerPos[`(${x}, ${y})`];
+                if (slot) {
+                    let [item, amount] = slot;
+                    if (item == 0) {
+                        continue;
+                    }
+                    let name = tileIDs[item];
+                    let image = $assets[name + ".png"];
+                    let thisItemSize = item < 0 ? cellSize : itemSize;
                     ctx.drawImage(
-                        cellImage,
-                        rx - cellSize / 2,
-                        ry - cellSize / 2,
-                        cellSize,
-                        cellSize
+                        image,
+                        rx - thisItemSize / 2,
+                        ry - thisItemSize / 2,
+                        thisItemSize,
+                        thisItemSize
                     );
-                    let slot = containerPos[`(${x}, ${y})`];
-                    if (slot) {
-                        let [item, amount] = slot;
-                        if (item == 0) {
-                            continue;
-                        }
-                        let name = tileIDs[item];
-                        let image = $assets[name + ".png"];
-                        let thisItemSize = item < 0 ? cellSize : itemSize;
-                        ctx.drawImage(
-                            image,
-                            rx - thisItemSize / 2,
-                            ry - thisItemSize / 2,
-                            thisItemSize,
-                            thisItemSize
+                    if (amount > 1) {
+                        ctx.font = `bold ${itemSize}px JetBrains Mono`;
+                        ctx.fillStyle = "white";
+                        ctx.fillText(
+                            amount.toString(),
+                            rx,
+                            ry
                         );
-                        if (amount > 1) {
-                            ctx.font = `bold ${itemSize}px JetBrains Mono`;
-                            ctx.fillStyle = "white";
-                            ctx.fillText(
-                                amount.toString(),
-                                rx,
-                                ry
-                            );
-                            ctx.font = `${itemSize}px JetBrains Mono`;
-                            ctx.fillStyle = "black";
-                            ctx.fillText(
-                                amount.toString(),
-                                rx,
-                                ry
-                            );
-                            // TODO: Flat is better than nested?
-                        }
+                        ctx.font = `${itemSize}px JetBrains Mono`;
+                        ctx.fillStyle = "black";
+                        ctx.fillText(
+                            amount.toString(),
+                            rx,
+                            ry
+                        );
                     }
                 }
             }
