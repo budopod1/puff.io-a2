@@ -3,27 +3,35 @@
 	import { onMount } from 'svelte';
     import { getContext } from 'svelte';
     import { decode } from "./shortsocket.js";
-    
-    let world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
+
     let canvas;
-    let lastKeys = new Set();
-    let lastMouseButtons = new Set();
-    let lastMouseX = 0;
-    let lastMouseY = 0;
-    let guiSize = 0.7;
-    let containerItemScale = 0.5;
-    let selectedScale = 0.75;
-    let selected = 0;
-    let gui = 0;
-    let container = [];
+    let animationFrame;
     let ctx;
     let width;
     let height;
     let maxWidth;
-    let maxRatio = 3;
-    let veiwHeight = 7;
-    let tileIDs = {
-        '-1': "empty", // https://stackoverflow.com/questions/8182183/javascript-assoc-array-with-negative-int-keys
+    
+    let lastKeys = new Set();
+    let lastMouseButtons = new Set();
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+    
+    const world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
+    let container = [];
+    
+    let selected = 0;
+    let gui = 0;
+    
+    const guiSize = 0.7;
+    const containerItemScale = 0.5;
+    const selectedScale = 0.75;
+    
+    const maxRatio = 3;
+    const veiwHeight = 7;
+
+    // https://stackoverflow.com/questions/8182183/javascript-assoc-array-with-negative-int-keys
+    const tileIDs = {
+        '-1': "empty",
         '-2': "arrow",
         1: "grass",
         2: "wood",
@@ -32,10 +40,10 @@
         5: "flowers",
         6: "trader1"
     };
-    let entityIDs = {
+    const entityIDs = {
         1: "puff"
     };
-    let animationFrame;
+    
     $: if (canvas) canvas.width = Math.min(
         width, height * maxRatio
     );
