@@ -302,11 +302,11 @@
         let keysChanged = false;
         if (lastKeys.size !== $keys.size) {
             keysChanged = true;
-        };
+        }
         for (let key of lastKeys) {
             if (!$keys.has(key)) {
                 keysChanged = true;
-            };
+            }
         }
         
         if (keysChanged) {
@@ -334,11 +334,11 @@
         let mouseButtonsChanged = false;
         if (lastMouseButtons.size !== $mouseButtons.size) {
             mouseButtonsChanged = true;
-        };
+        }
         for (let button of lastMouseButtons) {
             if (!$mouseButtons.has(button)) {
                 mouseButtonsChanged = true;
-            };
+            }
         }
 
         if (mouseButtonsChanged && gui == 0) {
