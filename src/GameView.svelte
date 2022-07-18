@@ -108,7 +108,7 @@
     }
     
     function normalPacket(packet) {
-        // Maybe add entity & tile data?w
+        // Maybe add entity & tile data?
         let [tile_xs, tile_ys, tile_types, entity_xs, entity_ys, entity_ids, more_data] = packet;
 
         let player_index = more_data[0];
