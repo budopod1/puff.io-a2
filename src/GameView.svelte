@@ -18,9 +18,10 @@
     
     const world = {"tilemap": {}, "entities": [], "player_x": 0, "player_y": 0};
     let container = [];
+    let containerBoundaries = [];
     
     let selected = 0;
-    let gui = 0;
+    let gui = 0; // TODO: rename gui to container
     
     const guiSize = 0.7;
     const containerItemScale = 0.5;
@@ -42,6 +43,19 @@
     };
     const entityIDs = {
         1: "puff"
+    };
+
+    const containerNames = {
+        1: "inventory",
+        2: "trades"
+    };
+    const containerWidths = {
+        "inventory": 8,
+        "trades": 9
+    };
+    const containerHeights = {
+        "inventory": 4,
+        "trades": 5
     };
     
     $: if (canvas) canvas.width = Math.min(
@@ -227,19 +241,10 @@
     }
 
     function renderGUI() {
-        let name = {
-            1: "inventory",
-            2: "trades"
-        }[gui];
+        let name = containerNames[gui];
         let cellImage = $assets["cell.png"];
-        let containerWidth = {
-            "inventory": 8,
-            "trades": 9
-        }[name];
-        let containerHeight = {
-            "inventory": 4,
-            "trades": 5
-        }[name];
+        let containerWidth = containerWidths[name];
+        let containerHeight = containerHeights[name];
         let cellSize = guiSize * height / containerHeight;
         let itemSize = containerItemScale * cellSize;
         let containerPos = {};
@@ -250,18 +255,26 @@
         }
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
+        containerBoundaries = [];
         for (let x = 0; x < containerWidth; x++) {
             for (let y = 0; y < containerHeight; y++) {
+                // Real x & y
                 let rx = width/2 + (x + 0.5 - containerWidth/2) * cellSize;
                 let ry = height/2 + (y + 0.5 - containerHeight/2) * cellSize;
+                // Final x & y
+                let fx = rx - cellSize / 2;
+                let fy = ry - cellSize / 2;
                 ctx.drawImage(
                     cellImage,
-                    rx - cellSize / 2,
-                    ry - cellSize / 2,
+                    fx,
+                    fy,
                     cellSize,
                     cellSize
                 );
                 let slot = containerPos[`(${x}, ${y})`];
+                containerBoundaries.push([
+                    x, y, fx, fy, fx + cellSize, fy + cellSize
+                ]);
                 if (slot) {
                     let [item, amount] = slot;
                     if (item == 0) {
@@ -341,7 +354,7 @@
             }
         }
 
-        if (mouseButtonsChanged && gui == 0) {
+        if (mouseButtonsChanged) {
             lastMouseButtons = new Set($mouseButtons);
             let mouseBytes = new Uint8Array(2);
             for (let i = 0; i < 3; i++) {
@@ -361,6 +374,32 @@
         if ($mouseY != lastMouseY) {
             mousePosChanged = true;
             lastMouseY = $mouseY;
+        }
+
+        if (gui) {
+            let cellX = null;
+            let cellY = null;
+            for (let [x, y, sx, sy, ex, ey] of containerBoundaries) {
+                if ($mouseX < sx || $mouseX > ex) {
+                    continue;
+                }
+                if ($mouseY < sy || $mouseY > ey) {
+                    continue;
+                }
+                cellX = x;
+                cellY = y;
+            }
+
+            let result = 0;
+            if (cellY != null) {
+                let containerName = containerNames[gui];
+                let containerWidth = containerWidths[containerName];
+                result = 1 + cellX + cellY * containerWidth;
+            }
+            let cellBytes = new Uint8Array(2);
+            cellBytes[0] = 67; // C or cell
+            cellBytes[1] = result;
+            return cellBytes;
         }
         
         if (mousePosChanged && gui == 0) {
