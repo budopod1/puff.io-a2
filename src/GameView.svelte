@@ -34,13 +34,18 @@
     const tileIDs = {
         '-1': "empty",
         '-2': "arrow",
+        '-3': "iron",
         1: "grass",
         2: "wood",
         3: "leaves",
         4: "stone",
         5: "flowers",
-        6: "trader1"
+        6: "trader1",
+        7: "leaves" // Temp
     };
+    let fullTiles = [
+        "empty", "arrow"
+    ];
     const entityIDs = {
         1: "puff"
     };
@@ -96,12 +101,8 @@
     };
 
     function frame() {
-        try {
-            render();
-            animationFrame = requestAnimationFrame(frame);
-        } catch(err) {
-            throw err;
-        }
+        render();
+        animationFrame = requestAnimationFrame(frame);
     }
 
     function zip(arrays) { // Modified from https://stackoverflow.com/questions/4856717/javascript-equivalent-of-pythons-zip-function
@@ -282,7 +283,8 @@
                     }
                     let name = tileIDs[item];
                     let image = $assets[name + ".png"];
-                    let thisItemSize = item < 0 ? cellSize : itemSize;
+                    let isFull = fullTiles.includes(name);
+                    let thisItemSize = isFull ? cellSize : itemSize;
                     ctx.drawImage(
                         image,
                         rx - thisItemSize / 2,
