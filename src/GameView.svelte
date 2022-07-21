@@ -34,7 +34,8 @@
     const tileIDs = {
         '-1': "empty",
         '-2': "arrow",
-        '-3': "iron",
+        '-3': "drill1",
+        '-4': "iron",
         1: "grass",
         2: "wood",
         3: "leaves",
@@ -73,7 +74,6 @@
     window._world = world;
     window._websocket = conn;
     
-    // let timer = new Timer();
     conn.onmessage = (e) => {
         let data = e.data;
         
@@ -93,16 +93,12 @@
                 return;
             }
             data = data.slice(1);
-            let msg = JSON.parse(data);
-            if (msg.action == "connect") {
-                console.log("Conntected to the server!");
-            }
+            let msg = JSON.parse(data); // No use for statuses yet
         }
     };
 
     function frame() {
         render();
-        console.log(containerType)
         animationFrame = requestAnimationFrame(frame);
     }
 
@@ -385,10 +381,11 @@
 
             let result = 0;
             if (cellY != null) {
-                let containerName = containerNames[container];
+                let containerName = containerNames[containerType];
                 let containerWidth = containerWidths[containerName];
                 result = 1 + cellX + cellY * containerWidth;
             }
+            console.log(result)
             let cellBytes = new Uint8Array(2);
             cellBytes[0] = 67; // C or cell
             cellBytes[1] = result;

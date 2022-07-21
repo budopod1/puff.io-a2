@@ -5,7 +5,7 @@
     import WaitingView from "./WaitingView.svelte";
 
     // Load the assets
-    const assetNames = ["puff.png", "grass.png", "stone.png", "leaves.png", "wood.png", "flowers.png", "cell.png", "trader1.png", "empty.png", "arrow.png", "iron.png"];
+    const assetNames = ["puff.png", "grass.png", "stone.png", "leaves.png", "wood.png", "flowers.png", "cell.png", "trader1.png", "empty.png", "arrow.png", "iron.png", "drill1.png"];
      
     const loadedAssets = {};
     let page = "waiting";
