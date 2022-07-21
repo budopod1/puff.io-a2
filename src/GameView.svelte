@@ -21,9 +21,9 @@
     let containerBoundaries = [];
     
     let selected = 0;
-    let gui = 0; // TODO: rename gui to container
+    let containerType = 0;
     
-    const guiSize = 0.7;
+    const containerSize = 0.7;
     const containerItemScale = 0.5;
     const selectedScale = 0.75;
     
@@ -41,7 +41,7 @@
         4: "stone",
         5: "flowers",
         6: "trader1",
-        7: "leaves" // Temp
+        7: "stone"
     };
     let fullTiles = [
         "empty", "arrow"
@@ -102,6 +102,7 @@
 
     function frame() {
         render();
+        console.log(containerType)
         animationFrame = requestAnimationFrame(frame);
     }
 
@@ -113,11 +114,11 @@
 
     function anyPacket(packet) {
         if (packet.length == 7) {
-            gui = 0;
+            containerType = 0;
             normalPacket(packet);
         } else {
-            let [gui_, items, amounts] = packet;
-            gui = gui_[0];
+            let [containerType_, items, amounts] = packet;
+            containerType = containerType_[0];
             container = zip([items, amounts]);
         }
     }
@@ -215,8 +216,8 @@
             );
         }
 
-        if (gui) {
-            renderGUI();
+        if (containerType) {
+            renderContainer();
         }
 
         if (selected) {
@@ -241,12 +242,12 @@
         }
     }
 
-    function renderGUI() {
-        let name = containerNames[gui];
+    function renderContainer() {
+        let name = containerNames[containerType];
         let cellImage = $assets["cell.png"];
         let containerWidth = containerWidths[name];
         let containerHeight = containerHeights[name];
-        let cellSize = guiSize * height / containerHeight;
+        let cellSize = containerSize * height / containerHeight;
         let itemSize = containerItemScale * cellSize;
         let containerPos = {};
         for (let i = 0; i < container.length; i++) {
@@ -367,18 +368,8 @@
             mouseBytes[0] = 66;
             return mouseBytes;
         }
-        
-        let mousePosChanged = false;
-        if ($mouseX != lastMouseX) {
-            mousePosChanged = true;
-            lastMouseX = $mouseX;
-        }
-        if ($mouseY != lastMouseY) {
-            mousePosChanged = true;
-            lastMouseY = $mouseY;
-        }
 
-        if (gui) {
+        if (containerType) {
             let cellX = null;
             let cellY = null;
             for (let [x, y, sx, sy, ex, ey] of containerBoundaries) {
@@ -394,7 +385,7 @@
 
             let result = 0;
             if (cellY != null) {
-                let containerName = containerNames[gui];
+                let containerName = containerNames[container];
                 let containerWidth = containerWidths[containerName];
                 result = 1 + cellX + cellY * containerWidth;
             }
@@ -404,7 +395,17 @@
             return cellBytes;
         }
         
-        if (mousePosChanged && gui == 0) {
+        let mousePosChanged = false;
+        if ($mouseX != lastMouseX) {
+            mousePosChanged = true;
+            lastMouseX = $mouseX;
+        }
+        if ($mouseY != lastMouseY) {
+            mousePosChanged = true;
+            lastMouseY = $mouseY;
+        }
+        
+        if (mousePosChanged && containerType == 0) {
             let mouseBytes = new Uint8Array(9);
             let scale = height / veiwHeight;
             let screenMouseX = $mouseX - width / 2;
