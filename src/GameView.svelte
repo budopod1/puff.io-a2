@@ -34,8 +34,9 @@
     const tileIDs = {
         '-1': "empty",
         '-2': "arrow",
-        '-3': "drill1",
-        '-4': "iron",
+        '-3': "iron",
+        '-4': "drill1",
+        '-5': "drill2",
         1: "grass",
         2: "wood",
         3: "leaves",
@@ -280,6 +281,10 @@
                     }
                     let name = tileIDs[item];
                     let image = $assets[name + ".png"];
+                    if (!image) {
+                        console.error(`Unable to draw item with id ${item}`);
+                        continue;
+                    }
                     let isFull = fullTiles.includes(name);
                     let thisItemSize = isFull ? cellSize : itemSize;
                     ctx.drawImage(
@@ -385,7 +390,6 @@
                 let containerWidth = containerWidths[containerName];
                 result = 1 + cellX + cellY * containerWidth;
             }
-            console.log(result)
             let cellBytes = new Uint8Array(2);
             cellBytes[0] = 67; // C or cell
             cellBytes[1] = result;
