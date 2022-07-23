@@ -21,6 +21,8 @@
     let containerBoundaries = [];
     
     let selected = 0;
+    let health = 0;
+    let playerIndex = 0;
     let containerType = 0;
     
     const containerSize = 0.7;
@@ -124,14 +126,20 @@
         // Maybe add entity & tile data?
         let [tile_xs, tile_ys, tile_types, entity_xs, entity_ys, entity_ids, more_data] = packet;
 
-        let player_index = more_data[0];
-
-        if (more_data.length == 2) {
-            selected = more_data[1];
+        if (more_data.length >= 1) {
+            playerIndex = more_data[0];
+    
+            if (more_data.length >= 2) {
+                selected = more_data[1];
+    
+                if (more_data.length >= 3) {
+                    health = more_data[2];
+                }
+            }
         }
     
-        world["player_x"] = entity_xs[player_index];
-        world["player_y"] = entity_ys[player_index];
+        world["player_x"] = entity_xs[playerIndex];
+        world["player_y"] = entity_ys[playerIndex];
     
         for (let [tile_x, tile_y, tile_type] of zip([tile_xs, tile_ys, tile_types])) {
             world["tilemap"][`(${tile_x}, ${tile_y})`] = {
