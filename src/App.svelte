@@ -47,7 +47,7 @@
             let assetImage = new Image();
             assetImage.src = imageURL;
             assetImage.onload = () => {
-                loadedAssets[assetName] = assetImage
+                loadedAssets[assetName] = assetImage;
                 assets.set(loadedAssets);
             }
         }

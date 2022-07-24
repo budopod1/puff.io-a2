@@ -28,6 +28,8 @@
     const containerSize = 0.7;
     const containerItemScale = 0.5;
     const selectedScale = 0.75;
+
+    let healthScale = 0.05;
     
     const maxRatio = 3;
     const veiwHeight = 7;
@@ -223,6 +225,32 @@
 
         if (containerType) {
             renderContainer();
+        }
+
+        let HP = health;
+        let healthSize = healthScale * height;
+        let x = width;
+        
+        while (HP >= 2) {
+            ctx.drawImage(
+                $assets["wind2.png"],
+                x - healthSize,
+                height - healthSize,
+                healthSize,
+                healthSize
+            );
+            x -= healthSize;
+            HP -= 2;
+        }
+        
+        if (HP == 1) {
+            ctx.drawImage(
+                $assets["wind1.png"],
+                x - healthSize,
+                height - healthSize,
+                healthSize,
+                healthSize
+            )
         }
 
         if (selected) {
