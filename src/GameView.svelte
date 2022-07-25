@@ -53,7 +53,8 @@
         "empty", "arrow"
     ];
     const entityIDs = {
-        1: "puff"
+        1: "puff",
+        2: "zombie"
     };
 
     const containerNames = {
