@@ -42,12 +42,13 @@
         '-4': "drill1",
         '-5': "drill2",
         1: "grass",
-        2: "wood",
-        3: "leaves",
-        4: "stone",
-        5: "flowers",
-        6: "trader1",
-        7: "stone"
+        2: "stone",
+        3: "wood",
+        4: "leaves",
+        5: "planks",
+        6: "flowers",
+        7: "trader1",
+        8: "stone" // iron ore
     };
     let fullTiles = [
         "empty", "arrow"
