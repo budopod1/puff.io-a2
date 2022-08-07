@@ -39,17 +39,18 @@
         '-1': "empty",
         '-2': "arrow",
         '-3': "iron",
-        '-4': "mango",
-        '-5': "drill1",
-        '-6': "drill2",
+        '-3': "drill1",
+        '-4': "drill2",
         1: "grass",
         2: "stone",
         3: "wood",
         4: "leaves",
         5: "planks",
         6: "flowers",
-        7: "trader1",
-        8: "stone" // iron ore
+        7: "mango",
+        8: "trader1",
+        9: "stone", // iron ore
+        10: "sapling"
     };
     let fullTiles = [
         "empty", "arrow"
