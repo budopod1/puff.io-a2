@@ -229,32 +229,32 @@
 
         if (containerType) {
             renderContainer();
-        }
-
-        let HP = health;
-        let healthSize = healthScale * height;
-        let x = width;
-        
-        while (HP >= 2) {
-            ctx.drawImage(
-                $assets["wind2.png"],
-                x - healthSize,
-                height - healthSize,
-                healthSize,
-                healthSize
-            );
-            x -= healthSize;
-            HP -= 2;
-        }
-        
-        if (HP == 1) {
-            ctx.drawImage(
-                $assets["wind1.png"],
-                x - healthSize,
-                height - healthSize,
-                healthSize,
-                healthSize
-            )
+        } else {
+            let HP = health;
+            let healthSize = healthScale * height;
+            let x = width;
+            
+            while (HP >= 2) {
+                ctx.drawImage(
+                    $assets["wind2.png"],
+                    x - healthSize,
+                    height - healthSize,
+                    healthSize,
+                    healthSize
+                );
+                x -= healthSize;
+                HP -= 2;
+            }
+            
+            if (HP == 1) {
+                ctx.drawImage(
+                    $assets["wind1.png"],
+                    x - healthSize,
+                    height - healthSize,
+                    healthSize,
+                    healthSize
+                )
+            }
         }
 
         if (selected) {
