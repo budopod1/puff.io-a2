@@ -1,14 +1,17 @@
- <script>
+<script>
     import { assets, keys, mouseX, mouseY, mouseButtons, mouseWheel } from "./globals.js";
     import { setContext, onMount } from 'svelte';
     import GameView from "./GameView.svelte";
     import WaitingView from "./WaitingView.svelte";
+    import LoginView from "./LoginView.svelte";
+    import SignupView from "./SignupView.svelte";
 
     // Load the assets
     const assetNames = ["puff.png", "grass.png", "stone.png", "leaves.png", "wood.png", "flowers.png", "planks.png", "sapling.png", "mango.png", "cell.png", "trader1.png", "empty.png", "arrow.png", "iron.png", "drill1.png", "drill2.png", "wind1.png", "wind2.png", "zombie.png"];
      
     const loadedAssets = {};
-    let page = "waiting";
+    let messages = [];
+    let page = "login";
 
     // Connect to the server
     let conn;
@@ -55,10 +58,31 @@
         conn = new WebSocket("wss://backend.puffio.repl.co/ws");
         conn.binaryType = "arraybuffer";
     
-        conn.onopen = () => {
-            page = "game";
+        // conn.onopen = () => {
+        //     page = "game";
+        // };
+
+        conn.onmessage = (e) => {
+            if (page == "login" || page == "signup") {
+                let data = JSON.parse(e.data.slice(1));
+    
+                if (data.success) {
+                    conn.send("ready");
+                    page = "game";
+                } else {
+                    messages = [
+                        ...messages,
+                        data.message
+                    ];
+                }
+            }
         };
     });
+
+    function switchPage(newPage) {
+        page = newPage;
+        messages = [];
+    }
 </script>
 <!-- data:text/html,<script>d=document;d.onkeydown=e=>d.body.innerText=e.keyCode</script> -->
 
@@ -66,11 +90,11 @@
     {#if page == "game"}
         <GameView/>
     {:else if page == "waiting"}
-        <WaitingView/>
+        <WaitingView/> <!-- Shouldn't be neccissary soon -->
     {:else if page == "login"}
-        <LoginView/>
+        <LoginView on:switchPage="{()=>{switchPage('signup')}}" bind:messages/>
     {:else if page == "signup"}
-        <SignupView/>
+        <SignupView on:switchPage="{()=>{switchPage('login')}}" bind:messages/>
     {/if}
 </main>
 <style>

@@ -1,7 +1,6 @@
 <script>
     import { assets, keys, mouseX, mouseY, mouseButtons, mouseWheel } from "./globals.js";
-	import { onMount } from 'svelte';
-    import { getContext } from 'svelte';
+	import { onMount, getContext } from 'svelte';
     import { decode } from "./shortsocket.js";
 
     let canvas;
@@ -82,6 +81,10 @@
     
     window._world = world;
     window._websocket = conn;
+
+    function response() {
+        conn.send(input());
+    }
     
     conn.onmessage = (e) => {
         let data = e.data;
@@ -92,7 +95,7 @@
             
             window._packet = packet;
             if (respond) {
-                conn.send(input());
+                response();
             }
             if (packet) {
                 anyPacket(packet);
@@ -103,6 +106,9 @@
             }
             data = data.slice(1);
             let msg = JSON.parse(data); // No use for statuses yet
+            if (msg.action == "ready") {
+                response();
+            }
         }
     };
 
@@ -468,7 +474,7 @@
     }
     
     onMount(() => {
-        conn.send("connect");
+        conn.send("ready");
 
         canvas.oncontextmenu = (e) => {
             e.preventDefault();
