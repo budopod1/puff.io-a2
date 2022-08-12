@@ -32,7 +32,7 @@
         </div>
         <div class="input">
             <label for="password">Password</label>
-            <input id="password" bind:value={password} minlength="5" maxlength="50" pattern="\w*" required>
+            <input id="password" bind:value={password} type="password" minlength="5" maxlength="50" pattern="\w*" required>
         </div>
         <button type="submit">Submit</button>
     </form>
