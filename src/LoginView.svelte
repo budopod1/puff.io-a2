@@ -17,6 +17,10 @@
     function switchPage() {
         dispatch("switchPage");
     }
+
+    function getHelp() {
+        dispatch("getHelp");
+    }
 </script>
 
 <AccountForm bind:username bind:password on:submit={login} bind:messages>
@@ -24,10 +28,7 @@
     <a slot="switch" href="#" on:click={switchPage}>
         I need to create an account
     </a>
+    <a slot="help" href="#" on:click={getHelp}>
+        Puff.IO Guide
+    </a>
 </AccountForm>
-
-<style>
-    a {
-        color: blue;
-    }
-</style>

@@ -23,7 +23,7 @@
         {/each}
     </div>
     <form class="body" on:submit|preventDefault>
-        <small class="help">
+        <small class="info">
             Username and password can only contain letters, numbers, and underscores
         </small>
         <div class="input">
@@ -41,10 +41,14 @@
         <slot name="switch"></slot>
     </div>
     <div class="spacer-2"></div>
+    <div class="help">
+        <slot name="help"></slot>
+    </div>
+    <div class="spacer-3"></div>
 </div>
 
 <style>
-    .help {
+    .info {
         margin-bottom: 1rem;
         width: 50%;
         display: inline-block;
@@ -54,7 +58,7 @@
         height: 100%;
         display: grid;
         grid-template-columns: auto min(80ch, 100%) auto;
-        grid-template-rows: auto auto auto auto 1fr auto 1fr;
+        grid-template-rows: auto auto auto auto 1fr auto 1fr auto 1fr;
         overflow: auto;
     }
 
@@ -97,6 +101,18 @@
     .spacer-2 {
         grid-column: 2;
         grid-row: 7;
+    }
+
+    .help {
+        grid-column: 2;
+        grid-row: 8;
+        text-align: center;
+        margin: 1rem 0;
+    }
+
+    .spacer-3 {
+        grid-column: 2;
+        grid-row: 9;
     }
 
     .input {

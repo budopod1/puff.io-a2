@@ -2,16 +2,16 @@
     import { assets, keys, mouseX, mouseY, mouseButtons, mouseWheel } from "./globals.js";
     import { setContext, onMount } from 'svelte';
     import GameView from "./GameView.svelte";
-    import WaitingView from "./WaitingView.svelte";
     import LoginView from "./LoginView.svelte";
     import SignupView from "./SignupView.svelte";
+    import HelpView from "./HelpView.svelte";
 
     // Load the assets
     const assetNames = ["puff.png", "grass.png", "stone.png", "leaves.png", "wood.png", "flowers.png", "planks.png", "sapling.png", "mango.png", "cell.png", "trader1.png", "empty.png", "arrow.png", "iron.png", "drill1.png", "drill2.png", "wind1.png", "wind2.png", "zombie.png"];
      
     const loadedAssets = {};
     let messages = [];
-    let page = "login";
+    let page = "";
 
     // Connect to the server
     let conn;
@@ -57,6 +57,9 @@
         
         conn = new WebSocket("wss://backend.puffio.repl.co/ws");
         conn.binaryType = "arraybuffer";
+
+        page = "login";
+         // TODO: check if connection succeeded
     
         // conn.onopen = () => {
         //     page = "game";
@@ -87,14 +90,19 @@
 <!-- data:text/html,<script>d=document;d.onkeydown=e=>d.body.innerText=e.keyCode</script> -->
 
 <main>
-    {#if page == "game"}
+    {#if page == ""}
+        loading...
+    {:else if page == "game"}
         <GameView/>
-    {:else if page == "waiting"}
-        <WaitingView/> <!-- Shouldn't be neccissary soon -->
     {:else if page == "login"}
-        <LoginView on:switchPage="{()=>{switchPage('signup')}}" bind:messages/>
+        <LoginView 
+            on:switchPage="{()=>{switchPage('signup')}}" 
+            on:getHelp="{()=>{switchPage('help')}}" bind:messages/>
     {:else if page == "signup"}
-        <SignupView on:switchPage="{()=>{switchPage('login')}}" bind:messages/>
+        <SignupView on:switchPage="{()=>{switchPage('login')}}" 
+            on:getHelp="{()=>{switchPage('help')}}" bind:messages/>
+    {:else if page == "help"}
+        <HelpView on:exitHelp="{()=>{switchPage('login')}}"/>
     {/if}
 </main>
 <style>
