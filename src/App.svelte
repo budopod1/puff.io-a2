@@ -12,6 +12,7 @@
     const loadedAssets = {};
     let messages = [];
     let page = "";
+    let contesting = true;
 
     // Connect to the server
     let conn;
@@ -39,31 +40,28 @@
         $mouseWheel += movement;
     }
 
+    window.onmessage = (e) => {
+        if (e.origin != "https://backend.puffio.repl.co") {
+            return;
+        }
+        tryConnect();
+        contesting = false;
+    }
+
     document.onmousemove = (e) => {
         $mouseX = e.offsetX;
         $mouseY = e.offsetY;
     }
 
-    onMount(() => {
-        for (let assetName of assetNames) {
-            let imageURL = new URL("assets/" + assetName, import.meta.url).href;
-            let assetImage = new Image();
-            assetImage.src = imageURL;
-            assetImage.onload = () => {
-                loadedAssets[assetName] = assetImage;
-                assets.set(loadedAssets);
+    function tryConnect() {
+        if (conn) {
+            if (conn.readyState == 0 || conn.readyState == 1) {
+                return;
             }
+            conn.close();
         }
-        
         conn = new WebSocket("wss://backend.puffio.repl.co/ws");
         conn.binaryType = "arraybuffer";
-
-        page = "login";
-         // TODO: check if connection succeeded
-    
-        // conn.onopen = () => {
-        //     page = "game";
-        // };
 
         conn.onmessage = (e) => {
             if (page == "login" || page == "signup") {
@@ -80,6 +78,27 @@
                 }
             }
         };
+    }
+
+    onMount(() => {
+        for (let assetName of assetNames) {
+            let imageURL = new URL("assets/" + assetName, import.meta.url).href;
+            let assetImage = new Image();
+            assetImage.src = imageURL;
+            assetImage.onload = () => {
+                loadedAssets[assetName] = assetImage;
+                assets.set(loadedAssets);
+            }
+        }
+
+        page = "login";
+         // TODO: check if connection succeeded
+    
+        // conn.onopen = () => {
+        //     page = "game";
+        // };
+
+        tryConnect();
     });
 
     function switchPage(newPage) {
@@ -104,11 +123,19 @@
     {:else if page == "help"}
         <HelpView on:exitHelp="{()=>{switchPage('login')}}"/>
     {/if}
+
+    {#if contesting}
+        <iframe src="https://backend.puffio.repl.co/contest"></iframe>
+    {/if}
 </main>
 <style>
     main {
         overflow: hidden;
         height: 100vh;
         width: 100vw;
+    }
+
+    iframe {
+        display: none;
     }
 </style>
