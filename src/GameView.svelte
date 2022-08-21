@@ -49,7 +49,8 @@
         7: "mango",
         8: "trader1",
         9: "stone", // iron ore
-        10: "sapling"
+        10: "sapling",
+        11: "trader1stall",
     };
     let fullTiles = [
         "empty", "arrow"
