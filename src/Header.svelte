@@ -3,7 +3,7 @@
 </script>
 
 <div>
-    <img src={puffURL}>
+    <img src={puffURL} alt="">
     <h1>Puff.IO</h1>
 </div>
 
