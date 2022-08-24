@@ -11,7 +11,11 @@
     const dispatch = createEventDispatcher();
 
     function signup() {
-        getConn().send(`signup:${username},${password};`);
+        getConn().send(JSON.stringify({
+            "action": "signup",
+            "username": username,
+            "password": password
+        }));
     }
 
     function switchPage() {

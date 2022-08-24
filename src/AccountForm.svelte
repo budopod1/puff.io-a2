@@ -23,16 +23,13 @@
         {/each}
     </div>
     <form class="body" on:submit|preventDefault>
-        <small class="info">
-            Username and password can only contain letters, numbers, and underscores
-        </small>
         <div class="input">
             <label for="username">Username</label>
-            <input id="username" bind:value={username} minlength="3" maxlength="20" pattern="\w*" required>
+            <input id="username" bind:value={username} minlength="3" maxlength="20" required>
         </div>
         <div class="input">
             <label for="password">Password</label>
-            <input id="password" bind:value={password} type="password" minlength="5" maxlength="50" pattern="\w*" required>
+            <input id="password" bind:value={password} type="password" minlength="5" maxlength="50" required>
         </div>
         <button type="submit">Submit</button>
     </form>
@@ -48,12 +45,6 @@
 </div>
 
 <style>
-    .info {
-        margin-bottom: 1rem;
-        width: 50%;
-        display: inline-block;
-    }
-    
     .top {
         height: 100%;
         display: grid;
