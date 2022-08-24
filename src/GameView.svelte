@@ -51,6 +51,7 @@
         9: "stone", // iron ore
         10: "sapling",
         11: "trader1stall",
+        12: "hatch",
     };
     let fullTiles = [
         "empty", "arrow"
