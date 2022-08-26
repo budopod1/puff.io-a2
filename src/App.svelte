@@ -125,7 +125,7 @@
     {/if}
 
     {#if contesting}
-        <iframe src="https://backend.puffio.repl.co/contest"></iframe>
+        <iframe title="Go away svelte A11Y checker" src="https://backend.puffio.repl.co/contest"></iframe>
     {/if}
 </main>
 <style>

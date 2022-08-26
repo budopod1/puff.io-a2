@@ -1,4 +1,4 @@
-<script>
+ <script>
     import Header from "./Header.svelte";
     
     export let username;
@@ -25,7 +25,7 @@
     <form class="body" on:submit|preventDefault>
         <div class="input">
             <label for="username">Username</label>
-            <input id="username" bind:value={username} minlength="3" maxlength="20" required pattern="\w*">
+            <input id="username" bind:value={username} minlength="3" maxlength="20" required pattern="\w+">
             <small class="info">Username can only have letters, numbers, and underscores</small>
         </div>
         <div class="input">
