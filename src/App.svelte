@@ -7,7 +7,7 @@
     import HelpView from "./HelpView.svelte";
 
     // Load the assets
-    const assetNames = ["puff.png", "grass.png", "stone.png", "leaves.png", "wood.png", "flowers.png", "planks.png", "sapling.png", "mango.png", "cell.png", "trader1.png", "trader1stall.png", "empty.png", "arrow.png", "iron.png", "drill1.png", "drill2.png", "wind1.png", "wind2.png", "zombie.png", "hatch.png"];
+    const assetNames = ["puff.png", "grass.png", "stone.png", "leaves.png", "wood.png", "flowers.png", "planks.png", "sapling.png", "mango.png", "cell.png", "trader1.png", "trader1stall.png", "empty.png", "arrow.png", "iron.png", "drill1.png", "drill2.png", "wind1.png", "wind2.png", "zombie.png", "hatch.png", "cursor.png"];
      
     const loadedAssets = {};
     let messages = [];

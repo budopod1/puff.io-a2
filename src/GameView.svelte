@@ -285,6 +285,16 @@
                 selectedSize
             );
         }
+
+        let cursorRatio = 245 / 385;
+        let cursorSize = 50;
+        ctx.drawImage(
+            $assets["cursor.png"],
+            $mouseX,
+            $mouseY,
+            cursorRatio * cursorSize,
+            cursorSize
+        );
     }
 
     function renderContainer() {
@@ -512,6 +522,6 @@
     }
 
     canvas {
-        cursor: default;
+        cursor: none;
     }
 </style>
