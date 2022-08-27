@@ -1,6 +1,7 @@
 <script>
     import { assets, keys, mouseX, mouseY, mouseButtons, mouseWheel } from "./globals.js";
     import { setContext, onMount } from 'svelte';
+    import faviconURL from "./assets/favicon.ico";
     import GameView from "./GameView.svelte";
     import LoginView from "./LoginView.svelte";
     import SignupView from "./SignupView.svelte";
@@ -107,6 +108,10 @@
     }
 </script>
 <!-- data:text/html,<script>d=document;d.onkeydown=e=>d.body.innerText=e.keyCode</script> -->
+
+<svelte:head>
+    <link rel="icon" href={faviconURL}>
+</svelte:head>
 
 <main>
     {#if page == ""}
