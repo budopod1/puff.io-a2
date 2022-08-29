@@ -23,7 +23,7 @@
 
 <h2>Breaking and Placing <b id="breaking-and-placing"></b></h2>
 
-<p>If you select a block that you have in your inventory you can place it by left clicking. To break a block, you can right click it or you can press shift and left click. Once you break a block, you have to wait a bit depending on the toughness of the block to recharge your wind energy.</p>
+<p>If you select a block that you have in your inventory you can place it by left clicking. To break a block, you can right click it or you can press shift and left click. Once you break a block, you have to wait a bit depending on the toughness of the block to recharge your wind energy. However, areas near the world spawn, are protected to stop new players getting stuck in a pit immediately.</p>
 
 <h2>Trading <b id="trading"></b></h2>
 

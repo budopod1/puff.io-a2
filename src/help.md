@@ -21,7 +21,7 @@ You can open you inventory by pressing Space, which will show you all the blocks
 
 ## Breaking and Placing <b id="breaking-and-placing"></b>
 
-If you select a block that you have in your inventory you can place it by left clicking. To break a block, you can right click it or you can press shift and left click. Once you break a block, you have to wait a bit depending on the toughness of the block to recharge your wind energy.
+If you select a block that you have in your inventory you can place it by left clicking. To break a block, you can right click it or you can press shift and left click. Once you break a block, you have to wait a bit depending on the toughness of the block to recharge your wind energy. However, areas near the world spawn, are protected to stop new players getting stuck in a pit immediately.
 
 ## Trading <b id="trading"></b>
 
