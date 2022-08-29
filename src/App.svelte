@@ -13,7 +13,8 @@
     const loadedAssets = {};
     let messages = [];
     let page = "";
-    let contesting = true;
+    let contesting = true; // currently checking the connection
+    let connected = false;
 
     // Connect to the server
     let conn;
@@ -79,6 +80,10 @@
                 }
             }
         };
+
+        conn.onopen = (e) => {
+            connected = true;
+        };
     }
 
     onMount(() => {
@@ -114,6 +119,10 @@
 </svelte:head>
 
 <main>
+    {#if !connected}
+        Not connected
+    {/if}
+    
     {#if page == ""}
         loading...
     {:else if page == "game"}
