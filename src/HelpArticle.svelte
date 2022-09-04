@@ -1,4 +1,4 @@
-<h1>Puff.IO Guide</h1>
+<h1>Puff.IO Guide & Updates</h1>
 
 <p>Once you create an account or log in, you can refer to this guide.</p>
 
@@ -11,9 +11,10 @@
     <li><a href="#trading">Trading</a></li>
     <li><a href="#enemies">Enemies</a></li>
     <li><a href="#food">Food</a></li>
+    <li><a href="#updates">Updates</a></li>
 </ol>
 
-<h2>Moving <b id="moving"></b></h2>
+<h2 id="moving">Moving</h2>
 
 <p>Press A and D to move left and right. Press W to jump, and S to halt.</p>
 
@@ -37,3 +38,14 @@
 
 <p>When you break leaves of trees you have a chance to get mangos, which can either be planted to grow new trees, or eaten to increace your wind power.</p>
 
+<h2 id="updates">Updates</h2>
+
+<p>There are several updates that may soon come to Puff.IO</p>
+
+<ul>
+    <li>Hovering Update (hoverboards)</li>
+    <li>Customisation Update (skins, and usernames display in game)</li>
+    <li>Automation Update (Blocks that can farm things automatically)</li>
+    <li>Monster Update (Moar monsters)</li>
+    <li>Underground Update (Ores and caves)</li>
+</ul>

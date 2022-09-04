@@ -33,6 +33,6 @@
         I need to create an account
     </a>
     <a slot="help" href="#" on:click={getHelp}>
-        Puff.IO Guide
+        Puff.IO Guide & Info
     </a>
 </AccountForm>
